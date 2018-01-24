@@ -29,7 +29,7 @@
                         .title {{training.title}}
                         .time {{training.time}}
         .reservation
-        Popup(v-if="displayPopup")
+        Popup(v-if="displayPopup" v-bind:trainings="sample.trainings")
 </template>
 
 <script>
@@ -110,6 +110,7 @@ export default {
                 nextMonth: []
             },
             displayPopup: false,
+            minimize: false,
         }
     },
     methods: {

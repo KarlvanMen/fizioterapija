@@ -24,8 +24,9 @@ export default {
 
 <style lang="stylus" scoped>
 .kalendars
+    overflow    hidden
     .info
-        padding 1em 2em
+        padding 1em 2em 0
         p
             border 1px solid #169cdd
             padding 1em
