@@ -11,11 +11,17 @@ import Kontakti from '@/components/Kontakti'
 Vue.use(Router)
 
 export default new Router({
+    scrollBehavior: () => ({ y: 0 }),
+    history: true,
     routes: [
         {
             path: '/',
             name: 'Home',
             component: Home
+        },
+        {
+            path: '*',
+            redirect: '/'
         },
         {
             path: '/fizioterapija',
