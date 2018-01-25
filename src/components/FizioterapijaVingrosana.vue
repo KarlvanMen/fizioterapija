@@ -111,14 +111,11 @@ export default {
                 &::before                    
                     position            absolute
                     content             ''
-                    background-color    #e3f3fb
                     z-index             -1
-                    width               110%
-                    height              0
-                    padding-bottom      110%
                     top                 auto
                     left                -10px
-                    bottom              -40%
-                    transform-origin    center
-                    transform           translateX(-50%) rotate(-45deg) 
+                    bottom              0
+                    height              0
+                    border-bottom       280px solid #e3f3fb
+                    border-right        280px solid transparent
 </style>

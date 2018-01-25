@@ -73,4 +73,7 @@ export default {
                 top         auto
                 bottom      0
                 left        0
+@media screen and (min-width: 650px)
+    padding 10px
+
 </style>

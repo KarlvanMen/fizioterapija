@@ -78,4 +78,10 @@ a
         img
             height  100%
             width   auto
+@media screen and (min-width: 650px)
+    #app
+        .head
+            height  61px
+            a
+                margin  auto 0 auto 41px
 </style>

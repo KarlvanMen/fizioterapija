@@ -32,7 +32,6 @@ export default {
         flex-flow       column
         align-items     center
         width           100%
-        height          calc(100vh - 61px)
         box-sizing      border-box
         justify-content space-between
         a

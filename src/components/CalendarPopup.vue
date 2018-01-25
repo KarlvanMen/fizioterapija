@@ -88,20 +88,19 @@ export default {
             max-height  0.1em
             overflow    hidden
             .minimize
-                transform rotate(180deg)
+                top                 10px
+                background-image    url(../assets/arrow-up.svg)
         .minimize
-            margin-top          -1.5em
             height              1.5em
-            width               2.8em
             background-image    url(../assets/arrow.svg)
             background-size     contain
             background-repeat   no-repeat
             background-position right bottom
-            transition          transform 0.2s ease-out .45s
-            margin-bottom       0.2em
-            margin-right        -2.8em
-            float               right
             cursor              pointer
+            position            absolute
+            top                 10px
+            left                0
+            right               5px
         .trainings,
         form
             margin-bottom   2em
@@ -167,13 +166,17 @@ export default {
                     vertical-align  middle
                     margin-left 1em
             button
-                border          none
-                background      #3cace2
-                color           white
+                border          1px solid #3cace2
+                color           #3cace2
+                background      white
                 font-weight     bold
                 padding         1em
                 text-transform  uppercase
-                border-radius   1.5em
+                border-radius   1.63em
                 width           100%
                 margin-top      2em
+                &:hover
+                    background      #3cace2
+                    color           white
+
 </style>

@@ -73,7 +73,7 @@ export default {
                 top     0
                 left    -5px
                 width   100%
-                height  calc(100% - 2.5em)
+                height  calc(100% - 3.5em)
             input
                 width           100%
                 background      none
@@ -81,14 +81,18 @@ export default {
                 border-bottom   1px solid #169cdd
                 padding         1em 0 0.5em 0
                 position        relative
+                outline         none
             input[type="submit" i]
-                border          none
-                border          1px solid #169cdd
-                border-radius   1.5em
+                border          1px solid #3cace2
+                color           #3cace2
                 background      white
-                height          3em
-                display         block
-                margin          1em auto
-                color           #169cdd
-                font-family     "Open Sans Semibold"
+                font-weight     bold
+                padding         1em
+                text-transform  uppercase
+                border-radius   1.63em
+                width           100%
+                margin-top      2em
+                &:hover
+                    background      #3cace2
+                    color           white
 </style>
