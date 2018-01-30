@@ -1,20 +1,29 @@
 <template lang="pug">
     .gallery
+        .title
+            h1  {{text[$route.params.id].title}}
+            .close(v-on:click="close()")
         .big-container(v-if="open !== null")
-            .container(v-if="open.type === 'image'")
+            .container
                 .arrow.prev(@click="prevBig()" v-if="current > 0")
-                .arrow.next(@click="nextBig()" v-if="current < images.length")
-                img(v-bind:src = "open.url")
-            .container(v-if="open.type === 'YouTube'")
-                .arrow.prev(@click="prevBig()" v-if="current > 0")
-                .arrow.next(@click="nextBig()" v-if="current < images.length")
-                youtube(:video-id="urlToId(open.url)" player-width="100%" player-height="100%" :player-vars="{ autoplay: 0, controls: 1, modestbranding: 1, showinfo: 0, rel: 0 }")
+                .arrow.next(@click="nextBig()" v-if="current < (text[$route.params.id].images.length - 1)")
+                .img-container(v-bind:style = "'background-image: url(' + open.url + ')'" v-if="open.type === 'image'")
+                youtube.youtube.no-pc(:video-id="urlToId(open.url)" player-width="100%" player-height="200px" :player-vars="{ controls: 1, modestbranding: 1, showinfo: 0, rel: 0 }" v-if="open.type === 'YouTube'")
+                youtube.youtube.pc(:video-id="urlToId(open.url)" player-width="100%" player-height="400px" :player-vars="{ controls: 1, modestbranding: 1, showinfo: 0, rel: 0 }" v-if="open.type === 'YouTube'")
+                youtube.youtube.pc-xl(:video-id="urlToId(open.url)" player-width="100%" player-height="600px" :player-vars="{ controls: 1, modestbranding: 1, showinfo: 0, rel: 0 }" v-if="open.type === 'YouTube'")
         .container-all(:style="totheLeft")
-            .arrow.prev(@click="prev()" v-if="images.length > 4 && mostLeft > 0")
-            .arrow.next(@click="next()" v-if="images.length > 4 && mostLeft + 4 < images.length")
-            .small-image(v-for="image, index in images" v-if="image.display")
+            .arrow.prev.no-pc(@click="prev()" v-if="text[$route.params.id].images.length > 4 && mostLeft > 0")
+            .arrow.next.no-pc(@click="next()" v-if="text[$route.params.id].images.length > 4 && mostLeft < (text[$route.params.id].images.length - 4)")
+            .arrow.prev.pc(@click="prev()" v-if="text[$route.params.id].images.length > 10 && mostLeftPC > 0")
+            .arrow.next.pc(@click="next()" v-if="text[$route.params.id].images.length > 10 && mostLeftPC < (text[$route.params.id].images.length - 10)")
+            .small-image.no-pc(v-for="image, index in text[$route.params.id].images" v-if="image.display")
                 .container(v-if="image.type === 'image'" :style="backgroundImage(image.url)" @click="changeBig(index)")
                 .container(v-else-if="image.type === 'YouTube'" :style="backgroundImage(getYouTubeThumb(image.url))" @click="changeBig(index)")
+                    img(src='../assets/play.svg' alt="play icon")
+            .small-image.pc(v-for="image, index in text[$route.params.id].images" v-if="image.displayPC")
+                .container(v-if="image.type === 'image'" :style="backgroundImage(image.url)" @click="changeBig(index)")
+                .container(v-else-if="image.type === 'YouTube'" :style="backgroundImage(getYouTubeThumb(image.url))" @click="changeBig(index)")
+                    img(src='../assets/play.svg' alt="play icon")
 </template>
 
 <script>
@@ -24,112 +33,14 @@ export default {
     name: 'Gallery',
     data () {
         return {
-            images: [
-                {
-                    type: 'image',
-                    title: 'title',
-                    text: 'Lorem Ipsum',
-                    url: 'https://dl.dropboxusercontent.com/s/2n8a0ukl478cqbj/img-2.png?dl=1',
-                    display: false,
-                },
-                {
-                    type: 'YouTube',
-                    title: 'title',
-                    text: 'Lorem Ipsum',
-                    url: 'https://www.youtube.com/watch?v=MeRmMz0_zJc',
-                    display: false,
-                },
-                {
-                    type: 'image',
-                    title: 'title',
-                    text: 'Lorem Ipsum',
-                    url: 'https://dl.dropboxusercontent.com/s/azj2tl1xie77rzx/img.png?dl=1',
-                    display: false,
-                },
-                {
-                    type: 'YouTube',
-                    title: 'title',
-                    text: 'Lorem Ipsum',
-                    url: 'https://www.youtube.com/watch?v=JcTCq8L6j_s',
-                    display: false,
-                },
-                {
-                    type: 'image',
-                    title: 'title',
-                    text: 'Lorem Ipsum',
-                    url: 'https://dl.dropboxusercontent.com/s/2n8a0ukl478cqbj/img-2.png?dl=1',
-                    display: false,
-                },
-                {
-                    type: 'image',
-                    title: 'title',
-                    text: 'Lorem Ipsum',
-                    url: 'https://dl.dropboxusercontent.com/s/azj2tl1xie77rzx/img.png?dl=1',
-                    display: false,
-                },
-                {
-                    type: 'image',
-                    title: 'title',
-                    text: 'Lorem Ipsum',
-                    url: 'https://dl.dropboxusercontent.com/s/2n8a0ukl478cqbj/img-2.png?dl=1',
-                    display: false,
-                },
-                {
-                    type: 'image',
-                    title: 'title',
-                    text: 'Lorem Ipsum',
-                    url: 'https://dl.dropboxusercontent.com/s/2n8a0ukl478cqbj/img-2.png?dl=1',
-                    display: false,
-                },
-                {
-                    type: 'image',
-                    title: 'title',
-                    text: 'Lorem Ipsum',
-                    url: 'https://dl.dropboxusercontent.com/s/azj2tl1xie77rzx/img.png?dl=1',
-                    display: false,
-                },
-                {
-                    type: 'image',
-                    title: 'title',
-                    text: 'Lorem Ipsum',
-                    url: 'https://dl.dropboxusercontent.com/s/2n8a0ukl478cqbj/img-2.png?dl=1',
-                    display: false,
-                },
-                {
-                    type: 'image',
-                    title: 'title',
-                    text: 'Lorem Ipsum',
-                    url: 'https://dl.dropboxusercontent.com/s/2n8a0ukl478cqbj/img-2.png?dl=1',
-                    display: false,
-                },
-                {
-                    type: 'image',
-                    title: 'title',
-                    text: 'Lorem Ipsum',
-                    url: 'https://dl.dropboxusercontent.com/s/2n8a0ukl478cqbj/img-2.png?dl=1',
-                    display: false,
-                },
-                {
-                    type: 'image',
-                    title: 'title',
-                    text: 'Lorem Ipsum',
-                    url: 'https://dl.dropboxusercontent.com/s/azj2tl1xie77rzx/img.png?dl=1',
-                    display: false,
-                },
-                {
-                    type: 'image',
-                    title: 'title',
-                    text: 'Lorem Ipsum',
-                    url: 'https://dl.dropboxusercontent.com/s/2n8a0ukl478cqbj/img-2.png?dl=1',
-                    display: false,
-                },
-            ],
             open: null,
             current: 0,
             mostLeft: 0,
+            mostLeftPC: 0,
             totheLeft: {}
         }
     },
+    props: ['text'],
     methods: {
         backgroundImage (url) {
             return {
@@ -143,35 +54,41 @@ export default {
             if (url === null) {
                 return ''
             }
-
             let results = url.match('[\\?&]v=([^&#]*)')
             let video = (results === null) ? url : results[1]
-
             return 'http://img.youtube.com/vi/' + video + '/2.jpg'
         },
         changeBig (i) {
             this.current = i
-            this.open = this.images[this.current]
+            this.open = this.text[this.$route.params.id].images[this.current]
         },
         next () {
             this.mostLeft++
-            this.images[this.mostLeft + 3].display = true
-            this.images[this.mostLeft - 1].display = false
+            this.mostLeftPC++
+            this.text[this.$route.params.id].images[this.mostLeft + 3].display = true
+            this.text[this.$route.params.id].images[this.mostLeft - 1].display = false
+            this.text[this.$route.params.id].images[this.mostLeftPC + 9].displayPC = true
+            this.text[this.$route.params.id].images[this.mostLeftPC - 1].displayPC = false
         },
         prev () {
             this.mostLeft--
-            this.images[this.mostLeft].display = true
-            this.images[this.mostLeft + 4].display = false
+            this.text[this.$route.params.id].images[this.mostLeft].display = true
+            this.text[this.$route.params.id].images[this.mostLeft + 4].display = false
+            this.mostLeftPC--
+            this.text[this.$route.params.id].images[this.mostLeftPC].displayPC = true
+            this.text[this.$route.params.id].images[this.mostLeftPC + 10].displayPC = false
         },
         nextBig () {
             this.mostLeft++
             this.current++
-            console.log(this.mostLeft)
-            console.log(this.current)
-            if (this.mostLeft + 4 > this.images.length) this.mostLeft = this.images.length - 4
-            if (this.current + 1 > this.images.length) this.current = this.images.length - 1
-            this.images[this.mostLeft + 3].display = true
-            this.images[this.mostLeft - 1].display = false
+            if (this.mostLeft + 4 > this.text[this.$route.params.id].images.length) this.mostLeft = this.text[this.$route.params.id].images.length - 4
+            if (this.current + 1 > this.text[this.$route.params.id].images.length) this.current = this.text[this.$route.params.id].images.length - 1
+            this.text[this.$route.params.id].images[this.mostLeft + 3].display = true
+            this.text[this.$route.params.id].images[this.mostLeft - 1].display = false
+            this.mostLeftPC++
+            if (this.mostLeftPC + 10 > this.text[this.$route.params.id].images.length) this.mostLeftPC = this.text[this.$route.params.id].images.length - 10
+            this.text[this.$route.params.id].images[this.mostLeftPC + 9].displayPC = true
+            this.text[this.$route.params.id].images[this.mostLeftPC - 1].displayPC = false
             this.changeBig(this.current)
         },
         prevBig () {
@@ -179,20 +96,38 @@ export default {
             this.current--
             if (this.mostLeft < 0) this.mostLeft = 0
             if (this.current < 0) this.current = 0
-            this.images[this.mostLeft].display = true
-            this.images[this.mostLeft + 4].display = false
+            this.text[this.$route.params.id].images[this.mostLeft].display = true
+            this.text[this.$route.params.id].images[this.mostLeft + 4].display = false
+            this.mostLeftPC--
+            if (this.mostLeftPC < 0) this.mostLeftPC = 0
+            this.text[this.$route.params.id].images[this.mostLeftPC].displayPC = true
+            this.text[this.$route.params.id].images[this.mostLeftPC + 10].displayPC = false
             this.changeBig(this.current)
         },
         showFirst () {
-            if (this.images.length > 4) {
+            // MOBILE
+            if (this.text[this.$route.params.id].images.length > 4) {
                 for (let i = 0; i < 4; i++) {
-                    this.images[i].display = true
+                    this.text[this.$route.params.id].images[i].display = true
                 }
             } else {
-                for (let i = 0; i < this.images.length; i++) {
-                    this.images[i].display = true
+                for (let i = 0; i < this.text[this.$route.params.id].images.length; i++) {
+                    this.text[this.$route.params.id].images[i].display = true
                 }
             }
+            // PC
+            if (this.text[this.$route.params.id].images.length > 10) {
+                for (let i = 0; i < 10; i++) {
+                    this.text[this.$route.params.id].images[i].displayPC = true
+                }
+            } else {
+                for (let i = 0; i < this.text[this.$route.params.id].images.length; i++) {
+                    this.text[this.$route.params.id].images[i].displayPC = true
+                }
+            }
+        },
+        close () {
+            this.$router.go(-1)
         }
     },
     mounted () {
@@ -210,6 +145,29 @@ export default {
     width               100%
     position            relative
     overflow            hidden
+    .pc,
+    .pc-xl
+        display none
+    .title
+        text-align      center
+        text-transform  uppercase
+        max-width       calc(100% - 5em)
+        margin          0 auto
+        position        relative
+        padding-top     0.75em
+        h1
+            font-size   1.5em
+        .close
+            position    absolute
+            top         2em
+            left        auto
+            right       -1.5em
+            height      1.5em
+            width       1.5em
+            background-image    url(../assets/x.svg)
+            background-size     contain
+            background-position center
+            cursor              pointer
     .big-container .container,
     .container-all
         .arrow
@@ -236,32 +194,34 @@ export default {
                 background-image    url(../assets/arrow-next.svg)
                 background-size     contain
                 background-repeat   no-repeat
-                background-position right center
+                background-position center center
             &:hover
-                background  linear-gradient(to left, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.7) 63%,rgba(0,0,0,0.34) 82%,rgba(0,0,0,0) 100%)
+                background  rgba(22,155,220,0.7)
                 opacity     1
     .big-container
-        height      60%
-        margin-top  80px
+        height          74%
+        padding-bottom  100px
         box-sizing  border-box
         .container
             position    relative
+            height      100%
             .arrow
                 &:before
                     height  40px
-            img
-                width   100%
-                height  auto
-            .description
-                padding 0 10px
-                h1
-                    font-size       1.1em
-                    font-family     "Open Sans Semibold"
-                    text-transform  uppercase
-                    font-size       1.2em
+            .img-container
+                height              100%
+                background-position center
+                background-repeat   no-repeat
+                background-size     contain
+            .youtube
+                display flex
+                height  100%
+                align-items center
+                &.pc,
+                &.pc-xl
+                    display none
     .container-all
         display         flex
-        height          40%
         overflow        hidden
         height          88px
         position        fixed
@@ -273,6 +233,7 @@ export default {
         .small-image
             width       25%
             flex        0 0 auto
+            cursor      pointer
             .container
                 width               100%
                 height              0
@@ -280,4 +241,51 @@ export default {
                 background-size     cover
                 background-position center
                 background-repeat   no-repeat
+                img
+                    width           33%
+                    height          auto
+                    padding-top     33%
+                    padding-left    33%
+    @media screen and (min-width: 1000px)
+        margin-top  -1px
+        height      calc(100vh - 60px)
+        .pc
+            display block
+        .no-pc
+            display none
+        .title
+            max-width   80%
+            .close
+                right   0
+        .container-all
+            .small-image
+                width   10%
+        .big-container
+            margin-top  2em
+            .container
+                max-width   80%
+                margin      0 auto
+                .arrow
+                    top     0px
+                    height  auto
+                    bottom  5px
+                    &.prev
+                        left -2.5em
+                    &.next
+                        right   -2.5em
+                    &:hover 
+                        background  none
+                .youtube
+                    &.no-pc
+                        display none
+                    &.pc
+                        display flex
+    @media screen and (min-width: 1500px)
+        .big-container
+            .container
+                .youtube
+                    &.pc
+                        display none
+                    &.pc-xl
+                        display flex
 </style>

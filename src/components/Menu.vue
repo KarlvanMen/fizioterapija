@@ -73,7 +73,8 @@ export default {
             text-transform  uppercase
             position        relative
             text-decoration none
-            &:hover 
+            &:hover,
+            &.router-link-active
                 &:after
                     width       42px
                     position    absolute
@@ -107,7 +108,8 @@ export default {
                 font-size   16px
                 padding     0
                 margin      0
-                &:hover
+                &:hover,
+                &.router-link-active
                     &:after
                         left    -0.5em
 </style>

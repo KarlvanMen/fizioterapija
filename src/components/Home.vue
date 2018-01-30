@@ -5,17 +5,18 @@
                 img(src='../assets/woman.png')
             .rect0                
             .rect1
-                svg(xmlns="http://www.w3.org/2000/svg" width="1372" height="989")
-                    path(fill-rule="evenodd" opacity=".329" fill="#169CDD" d="M1371.662 989H.001V.957h441.386L1371.662 989z")
+                svg(viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg")
+                    polygon(fill="#169CDD" points="0 0, 100 100, 0 100")
             .rect2
-                svg(xmlns="http://www.w3.org/2000/svg" width="1372" height="989")
-                    path(fill-rule="evenodd" opacity=".329" fill="#169CDD" d="M1371.903 989H.242V.957h441.386L1371.903 989z")
+                svg(viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg")
+                    polygon(fill="#169CDD" points="0 0, 100 100, 0 100")
             .rect3
-                svg(xmlns="http://www.w3.org/2000/svg" width="1373" height="989")
-                    path(fill-rule="evenodd" opacity=".329" fill="#169CDD" d="M1372.397 989H.736V.957h441.385L1372.397 989z")
+                svg(viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg")
+                    polygon(fill="#169CDD" points="0 0, 100 100, 0 100")
             .rect4
-                svg(xmlns="http://www.w3.org/2000/svg" width="1623" height="989")
-                    path(fill-rule="evenodd" opacity=".122" fill="#169CDD" d="M.832.957h1621.661V989H931.107L.832.957z")
+                svg(viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg")
+                    polygon(fill="#169CDD" points="0 0, 100 100, 0 100")
+            .rect5
         nav
             router-link(:to="{ name: 'Fizioterapija'}")
                 h1  Fizioterapija
@@ -85,7 +86,7 @@ export default {
             background-color    #efeff7
             display             block
             position            absolute
-            top                 0
+            top                 -1px
             left                0
             right               0
             bottom              0
@@ -96,35 +97,53 @@ export default {
             .rect2,
             .rect3,
             .rect4,
+            .rect5,
             .woman
                 position    absolute
+                svg
+                    height  100%
+                    width   auto
             .rect0
                 top     0
                 bottom  0
                 left    0
                 right   0
-                background  #bebeff
+                background  #9cc9df
                 opacity     0.2
+            .rect1,
+            .rect2,
+            .rect3
+                opacity     .33
             .rect1
                 top     0
                 bottom  0
-                left    auto
-                right   55%
+                left    0
+                right   0
             .rect2
-                top     0
+                top     35%
                 bottom  0
-                left    auto
-                right   35%
+                left    0
+                right   0
             .rect3
-                top     0
+                top     80%
                 bottom  0
-                left    auto
-                right   15%
+                left    0
+                right   0
             .rect4
-                top     0
-                bottom  0
-                left    20%
-                right   auto
+                top             0
+                bottom          0
+                left            0
+                right           0
+                padding-left    24%
+                transform       rotate(180deg)
+                opacity         .12
+            .rect5
+                top         0
+                left        76%
+                right       0
+                bottom      0
+                background  #169CDD
+                opacity     .12
             .woman
                 top     0
                 left    0

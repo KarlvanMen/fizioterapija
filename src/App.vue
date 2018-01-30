@@ -75,6 +75,7 @@ a
     a
         margin  auto
         height  28px
+        outline none
         img
             height  100%
             width   auto

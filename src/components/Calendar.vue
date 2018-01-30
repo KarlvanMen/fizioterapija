@@ -2,27 +2,45 @@
     .calendar
         .header
             .title
+                h1.pc   Kalendārs
+                .arrow.prev.pc(@click="changePreviousMonth" v-if="showPrev")
                 h1  {{ text.months[(activeDate.month-1)] }}
+                .arrow.next.pc(@click="changeNextMonth" v-if="showNext")                
                 p   Pirms nākt uz nodarbību, rezervē sev vietu noklikšķinot uz&nbsp;tās
             .big-container
-                .arrow.prev(@click="previousWeek")
+                .arrow.prev.no-pc(@click="previousWeek")
                 .month.prev-month
                     .week(v-for="week in dates.previousMonth")
                         .day(v-for="day, index in week" @click="changeToday(day, index)" :class="{'not-current-month': !(day.month === activeDate.month), 'today': (day.day === activeDate.day && day.month === activeDate.month && day.year === activeDate.year)}")
                             .weekday {{text.days[index]}}
                             .date {{day.day}}
+                            .trainings.pc.grey
+                                template(v-for="training, index in sample.trainings")
+                                    .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active}")
+                                        .title {{training.title}}
+                                        .time {{training.time}}
                 .month.this-month
                     .week(v-for="week in dates.thisMonth")
                         .day(v-for="day, index in week" @click="changeToday(day, index)" :class="{'not-current-month': !(day.month === activeDate.month), 'today': (day.day === activeDate.day && day.month === activeDate.month && day.year === activeDate.year)}")
                             .weekday {{text.days[index]}}
                             .date {{day.day}}
+                            .trainings.pc
+                                template(v-for="training, index in sample.trainings")
+                                    .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active, grey: training.date.day < currentDate.day}")
+                                        .title {{training.title}}
+                                        .time {{training.time}}
                 .month.next-month
                     .week(v-for="week in dates.nextMonth")
                         .day(v-for="day, index in week" @click="changeToday(day, index)" :class="{'not-current-month': !(day.month === activeDate.month), 'today': (day.day === activeDate.day && day.month === activeDate.month && day.year === activeDate.year)}")
                             .weekday {{text.days[index]}}
                             .date {{day.day}}
-                .arrow.next(@click="nextWeek")
-        .main
+                            .trainings.pc
+                                template(v-for="training, index in sample.trainings")
+                                    .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active}")
+                                        .title {{training.title}}
+                                        .time {{training.time}}
+                .arrow.next.no-pc(@click="nextWeek")
+        .main.no-pc
             .trainings
                 template(v-for="training, index in sample.trainings")
                     .training-container(v-if="trainingIsToday(training)" @click="addTraining(index)" :class="{active: training.active}")
@@ -49,6 +67,15 @@ export default {
                     'S',
                     'S',
                 ],
+                daysFull: [
+                    'Pirmdiena',
+                    'Otrdiena',
+                    'Trešdiena',
+                    'Ceturtdiena',
+                    'Piektdiena',
+                    'Sestdiena',
+                    'Svētdiena',
+                ],
                 months: [
                     'Janvāris',
                     'Februāris',
@@ -72,8 +99,8 @@ export default {
                     {
                         date: {
                             year: 2018,
-                            month: 1,
-                            day: 24
+                            month: 2,
+                            day: 2
                         },
                         time: '17:30',
                         title: 'Power Stretch Training',
@@ -83,7 +110,7 @@ export default {
                         date: {
                             year: 2018,
                             month: 1,
-                            day: 24
+                            day: 20
                         },
                         time: '17:30',
                         title: 'Power Stretch Training',
@@ -93,7 +120,7 @@ export default {
                         date: {
                             year: 2018,
                             month: 1,
-                            day: 23
+                            day: 30
                         },
                         time: '17:30',
                         title: 'Power Stretch Training',
@@ -111,6 +138,8 @@ export default {
             },
             displayPopup: false,
             minimize: false,
+            showNext: true,
+            showPrev: false
         }
     },
     methods: {
@@ -130,6 +159,18 @@ export default {
                 return false
             }
             if (!(tr.date.day === this.activeDate.day)) {
+                return false
+            }
+            return true
+        },
+        trainingIsThisDay (tr, day) {
+            if (!(tr.date.year === day.year)) {
+                return false
+            }
+            if (!(tr.date.month === day.month)) {
+                return false
+            }
+            if (!(tr.date.day === day.day)) {
                 return false
             }
             return true
@@ -348,9 +389,11 @@ export default {
             let weeks = this.$el.querySelectorAll('.week')
             let months = this.$el.querySelectorAll('.month')
             setTimeout(() => {
+                let once = true
                 weeks.forEach((week) => {
-                    if (week.querySelector('.today') !== null) {
+                    if (week.querySelector('.today') !== null && once) {
                         week.classList.add('current')
+                        once = false
                     } else {
                         week.classList.remove('current')
                     }
@@ -396,6 +439,32 @@ export default {
                 this.activeDate.day += 7
             }
             this.addCurrentWeek()
+        },
+        changePreviousMonth () {
+            if (this.activeDate.month < 2) {
+                this.activeDate.month = 12
+                this.activeDate.year--
+            } else {
+                this.activeDate.month--
+            }
+            this.activeDate.dayOfTheWeek = new Date(this.activeDate.year, this.activeDate.month, this.activeDate.day).getDay()
+            this.addCurrentWeek()
+            this.showPrev = false
+            this.showNext = true
+        },
+        changeNextMonth () {
+            if (this.activeDate.month === 12) {
+                this.activeDate.month = 1
+                this.activeDate.year++
+            } else {
+                this.activeDate.month++
+            }
+            let days = new Date(this.activeDate.year, this.activeDate.month, 0).getDate()
+            if (days < this.activeDate.day) this.activeDate.day = days
+            this.activeDate.dayOfTheWeek = new Date(this.activeDate.year, this.activeDate.month, this.activeDate.day).getDay()
+            this.addCurrentWeek()
+            this.showPrev = true
+            this.showNext = false
         }
     },
     mounted: function () {
@@ -413,6 +482,8 @@ export default {
 
 <style lang="stylus" scoped>
 .calendar
+    .pc
+        display none
     .header
         position    relative
         &:after
@@ -484,7 +555,6 @@ export default {
                 flex                0 0 auto
                 &.prev
                     transform       rotate(180deg)
-
                 &.hide
                     display none
             .month
@@ -542,4 +612,138 @@ export default {
                         border-color    #17c37b
                     .time
                         background  #17c37b
+    @media screen and (min-width: 1000px)
+        width           59%
+        margin-left     auto
+        z-index         10
+        margin-right    18%
+        .pc
+            display block
+        .no-pc
+            display none
+        .header
+            &:after
+                display none
+            .title
+                .arrow
+                    display inline-block
+                    width   1em
+                    height  1.5em
+                    background-image    url(../assets/arrow-right.svg)
+                    background-size     contain
+                    background-repeat   no-repeat
+                    background-position center
+                    vertical-align      middle
+                    cursor              pointer
+                    &.prev
+                        transform       rotate(180deg)
+                        margin-right    0.5em
+                    &.next
+                        margin-left     0.5em
+                h1
+                    text-align      left
+                    display         inline-block
+                    vertical-align  middle
+                    &:after
+                        display none
+                    &.pc
+                        display         block
+                        margin-bottom   0
+                        &:after
+                            display     block
+                            margin-left -0.2em
+                            width       1em
+                            margin-top  0.25em
+                p
+                    display         inline-block
+                    vertical-align  middle
+                    padding         0
+                    width           40%
+                    text-align      left
+                    font-size       0.8em
+                    position        relative
+                    margin-left     1em
+            .big-container
+                margin-bottom   2em
+                .month
+                    position        relative
+                    z-index         100
+                    &:before
+                        content     ''
+                        position    absolute
+                        top         -10px
+                        left        -10px
+                        right       -2px
+                        bottom      -10px
+                        background  #f2f2f2
+                        z-index     -1
+                    .week
+                        display flex
+                        height  auto
+                        &:not(.current)
+                            display flex
+                        .day
+                            flex            1 1 auto
+                            float           none
+                            text-align      left
+                            background      #f2f2f2
+                            border-bottom   1px solid #3cace2
+                            border-left     1px solid #3cace2
+                            border-right    none
+                            min-height      70px
+                            position        relative
+                            padding         5px
+                            &:first-child
+                                &:before 
+                                    content     ''
+                                    position    absolute
+                                    top         0
+                                    left        -10px
+                                    right       100%
+                                    bottom      -1px
+                                    border-bottom   1px solid #3cace2
+                            .date
+                                opacity 0.21
+                            .weekday
+                                display none
+                            .trainings
+                                .training-container
+                                    display         flex
+                                    justify-content center
+                                    align-items     stretch
+                                    margin-top      30px
+                                    flex-wrap       wrap
+                                    cursor          pointer
+                                    .title
+                                        border      1px solid #169cdd
+                                        padding     5px 2px
+                                    .time
+                                        flex            1 1 auto
+                                        background      #169cdd
+                                        color           #f2f2f2
+                                        display         flex
+                                        justify-content center
+                                        align-items     center
+                                        padding         5px
+                                    &.grey
+                                        pointer-events  none
+                                        .title
+                                            border      1px solid #b0b0b0
+                                        .time
+                                            background  #b0b0b0
+                                    &.active
+                                        .title, .time
+                                            border-color    #17c37b
+                                        .time
+                                            background  #17c37b
+                            &.today
+                                background  #f2f2f2
+                                color       inherit
+                            &.not-current-month
+                                opacity 1                                
+                                background  #f2f2f2
+                                .date
+                                    opacity 0
+                                .trainings
+                                    display none
 </style>

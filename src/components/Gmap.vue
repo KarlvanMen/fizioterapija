@@ -10,12 +10,6 @@ export default {
     name: 'Gmap',
     data () {
         return {
-            markerCoordinates: [
-                {
-                    lat: 56.955454,
-                    lng: 24.118983
-                }
-            ],
             map: null,
             bounds: null,
             markers: []
@@ -279,6 +273,7 @@ export default {
         }) 
         
     },
+    props: ['markerCoordinates']
 }
 </script>
 
@@ -287,4 +282,6 @@ export default {
     width   100%
     height  200px
     background  #f2f2f2
+    @media screen and (min-width: 1000px)
+        height  auto
 </style>

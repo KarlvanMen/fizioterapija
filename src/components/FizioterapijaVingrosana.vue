@@ -1,11 +1,22 @@
 <template lang="pug">
-    .fizioterapija    
-        ul
-            li.section(v-for="section, index in text" @click="toggleSection(index)")
+    .fizioterapija
+        .title.pc
+            h1  {{pageInfo.title}}
+            .quote(v-if="pageInfo.quote.length")
+                p   {{pageInfo.quote}}
+            .redir(v-if="pageInfo.link.title.length")
+                router-link(:to="{ path: pageInfo.link.url}")
+                    h4 {{pageInfo.link.title}}
+        ul.section-container
+            li.section(v-for="section, index in text" @click="toggleSection(index)" :class="'section-' + (index%3 + 1)")
+                .background(v-bind:style="{'background-image': 'url('+section.image+')'}")
                 h2  {{section.title}}
                 .text
                     h3  {{section.text.title}}
-                    p   {{section.text.text}}
+                    p.desc   {{section.text.text}}
+                    p.pricing   {{section.text.price}}
+            li.section.extra(v-for="extra in extraEl")
+                .background(v-bind:style="{'background-image': 'url('+extraImg[extra-1]+')'}")
 </template>
 
 <script>
@@ -14,26 +25,44 @@ export default {
     name: 'FizioterapijaVingrosana',
     data () {
         return {
+            extraImg: [
+                'https://dl.dropboxusercontent.com/s/xtlpa77eoxxtlyd/9-briva-laucina.jpg?dl=0',
+                'https://dl.dropboxusercontent.com/s/xtlpa77eoxxtlyd/9-briva-laucina.jpg?dl=0',
+            ]
         }
     },
-    props: ['text'],
+    props: ['text', 'pageInfo'],
     methods: {
         toggleSection (index) {
             let sections = document.querySelector('.fizioterapija').querySelectorAll('.section')
-            sections[index].classList.contains('open') ? sections[index].classList.toggle('open') : this.closeOtherSections(sections, index)
+            for (let i = 0; i < sections.length; i++) {
+                if (i !== index) {
+                    sections[i].classList.remove('open')
+                    sections[i].style.marginBottom = '0'
+                }
+            }
+            if (sections[index].classList.contains('open')) {
+                sections[index].classList.remove('open')
+                sections[index].style.marginBottom = '0'
+            } else {
+                sections[index].classList.add('open')
+                setTimeout(function () {
+                    let height = sections[index].querySelector('.text').offsetHeight + 100
+                    sections[index].style.marginBottom = height + 'px'
+                }, 200)
+            }
         },
-        closeOtherSections (sections, index) {
-            sections.forEach((section) => {
-                section.classList.remove('open')
-            })
-            sections[index].classList.add('open')
-        }
     },
     updated: () => {
         let sections = document.querySelector('.fizioterapija').querySelectorAll('.section')
         sections.forEach((section) => {
             section.classList.remove('open')
         })
+    },
+    computed: {
+        extraEl: function () {
+            return this.text != null ? 3 - this.text.length % 3 !== 3 ? 3 - this.text.length % 3 : 0 : 0
+        }
     }
 }
 </script>
@@ -57,6 +86,8 @@ export default {
 .fizioterapija
     padding     10px 0 25px 0
     height      100%
+    .pc
+        display none
     ul
         margin  0
         padding 0
@@ -118,4 +149,179 @@ export default {
                     height              0
                     border-bottom       280px solid #e3f3fb
                     border-right        280px solid transparent
+@media screen and (min-width: 1000px)
+    .fizioterapija
+        padding-bottom  0
+        .pc
+            display block
+            padding 35px 0 2em 218px
+            h1  
+                text-transform  uppercase
+                font-size       32px
+                position        relative
+                &:after
+                    content     ''
+                    position    absolute
+                    top         110%
+                    left        -0.25em
+                    height      0
+                    width       1.25em
+                    border-bottom   1px solid #169cdd
+            .quote
+                max-width       250px
+                text-transform  uppercase
+                font-weight     bold
+                margin-left     2em
+                p
+                    &:before
+                        content '“'
+                        display block
+                        width   100%
+                        font-weight         bold
+                        font-style          italic
+                        color               #169cdd
+                        font-size           3em
+                        background-repeat   no-repeat
+                        background-size     contain
+                        background-position left top
+                        margin-bottom       -0.5em
+                        margin-left         -0.125em
+            .redir
+                text-transform  uppercase
+                margin-top      3em
+                font-size       0.8em
+                margin-left     1.5em
+                display         inline-block
+                position        relative
+                padding-right   0.5em
+                a
+                    &:after
+                        content     ''
+                        position    absolute
+                        top         0
+                        bottom      0
+                        left        100%
+                        background-image    url(../assets/arrow-next-blue.svg)
+                        background-size     100% 60%
+                        background-repeat   no-repeat
+                        background-position center
+                        width               1.5em
+        ul
+            display                 grid
+            grid-template-columns   repeat(3, 1fr)
+            grid-gap                0
+            background              #f2f2f2
+            li
+                list-style      none
+                padding         1em
+                height          0
+                padding-bottom  56.25%
+                z-index         1000
+                cursor          pointer
+                &.extra
+                    cursor      initial
+                .background
+                    position            absolute
+                    top                 0
+                    left                0
+                    right               0
+                    bottom              0
+                    background-position center
+                    background-repeat   no-repeat
+                    background-size     cover
+                    z-index             -1
+                h2
+                    border-bottom       0
+                    background-color    rgba(255,255,255,0.8)
+                    position            absolute
+                    top                 2em
+                    left                1em
+                    right               1em
+                    bottom              2em
+                    padding             1em
+                    font-size           1.2em
+                    text-align          center
+                    box-sizing          border-box
+                    align-items         center
+                    justify-content     center
+                    &:before
+                        display none                
+                &.open
+                    overflow    visible
+                    width       auto
+                    &:before
+                        bottom          -1.2em
+                        border-bottom   2em solid #ffffff
+                        border-left     2em solid transparent
+                        border-right    2em solid transparent
+                        z-index         1000
+                        left            50%
+                        transform       translateX(-50%)
+                    &:after
+                        content             ''
+                        position            absolute
+                        top                 auto
+                        bottom              -1.5em
+                        left                50%
+                        transform           translateX(-50%)
+                        z-index             1000
+                        width               2em
+                        height              2em
+                        background-image    url('../assets/arrow-up.svg')
+                        background-size     contain
+                        background-repeat   no-repeat
+                    .text
+                        position        absolute
+                        top             100%
+                        top             calc(100% + 10px)
+                        background      white
+                        left            1em
+                        width           290%
+                        width           calc(300% - 2em)
+                        padding         0.5em 1em 1em
+                        box-sizing      border-box
+                        cursor          initial     
+                        overflow        visible       
+                        z-index         10            
+                        &:after
+                            position        absolute
+                            content         ''
+                            top             auto
+                            left            -1em
+                            bottom          -90px
+                            height          0
+                            border-bottom   280px solid #e3f3fb
+                            border-right    280px solid transparent
+                            z-index         -10
+                        &:before
+                            content     ''
+                            position    absolute
+                            top         0
+                            left        0
+                            right       0
+                            bottom      0
+                            background  white
+                            z-index     -1
+                        h3
+                            width           33%
+                            font-size       1em
+                        p.desc
+                            column-count    2
+                            column-gap      3em
+                            widows          5
+                            display         inline-block
+                            vertical-align  top
+                            width           66%
+                            padding-right   3em
+                            box-sizing      border-box
+                        p.pricing
+                            display         inline-block
+                            vertical-align  top
+                            width           33%
+                    &.section-2
+                        .text
+                            left    -95%
+                    &.section-3
+                        .text
+                            left    -195%
 </style>

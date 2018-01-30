@@ -5,6 +5,7 @@
             .training(v-for="tr in trainings" v-if="tr.active")
                 .date
                     p {{tr.date.day}}.{{tr.date.month}}.{{tr.date.year}} {{tr.time}}
+                    .delete(@click="tr.active = false")
                 p {{tr.title}}
         form(v-on:submit.prevent="submitTr()")
             .input-holder
@@ -109,6 +110,19 @@ export default {
                 font-size       0.8em
                 .date
                     border-bottom   2px solid #3cace2
+                    position        relative
+                    .delete
+                        width               1.35em
+                        position            absolute
+                        top                 0
+                        left                auto
+                        right               0
+                        bottom              0
+                        background-image    url(../assets/x-blue.svg)
+                        background-position center
+                        background-size     contain
+                        background-repeat   no-repeat
+                        cursor              pointer
                     p
                         margin-bottom 0.2em
             .input-holder
@@ -178,5 +192,12 @@ export default {
                 &:hover
                     background      #3cace2
                     color           white
-
+        @media screen and (min-width: 1000px)
+            position    fixed
+            left        auto
+            right       0
+            top         auto
+            bottom      0
+            width       280px
+            z-index     100
 </style>
