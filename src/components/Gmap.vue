@@ -284,4 +284,5 @@ export default {
     background  #f2f2f2
     @media screen and (min-width: 1000px)
         height  auto
+        flex    1
 </style>

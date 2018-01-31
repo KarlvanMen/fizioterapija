@@ -3,30 +3,18 @@
         .pc-background
             .woman
                 img(src='../assets/woman.png')
-            .rect0                
-            .rect1
-                svg(viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg")
-                    polygon(fill="#169CDD" points="0 0, 100 100, 0 100")
-            .rect2
-                svg(viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg")
-                    polygon(fill="#169CDD" points="0 0, 100 100, 0 100")
-            .rect3
-                svg(viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg")
-                    polygon(fill="#169CDD" points="0 0, 100 100, 0 100")
-            .rect4
-                svg(viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg")
-                    polygon(fill="#169CDD" points="0 0, 100 100, 0 100")
-            .rect5
+            .rect0   
         nav
-            router-link(:to="{ name: 'Fizioterapija'}")
+            router-link.a(:to="{ name: 'Fizioterapija'}")
                 h1  Fizioterapija
-            router-link(:to="{ name: 'Vingrosana'}")
+            router-link.b(:to="{ name: 'Vingrosana'}")
                 h1 Vingrošana
-            .quote
+            .quote.c
                 p {{quote}}
-            router-link.movecenter(:to="{ name: 'Kalendars'}")
+            .ghost
+            router-link.movecenter.d(:to="{ name: 'Kalendars'}")
                 h1 Kalendārs
-            router-link(:to="{ name: 'Par mums'}")
+            router-link.e(:to="{ name: 'Par mums'}")
                 h1 Par mums
 </template>
 
@@ -38,6 +26,36 @@ export default {
         return {
             quote: 'Lorem ipsum dolor sit amet, consectetuer',
         }
+    },
+    methods: {
+        detectIE () {
+            if (this.isIE()) {
+                document.querySelector('.pc-background').classList.add('iExpl')
+            }
+        },
+        isIE () {
+            let ua = window.navigator.userAgent
+
+            let msie = ua.indexOf('MSIE ')
+            if (msie > 0) {
+                return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10)
+            }
+
+            let trident = ua.indexOf('Trident/')
+            if (trident > 0) {
+                let rv = ua.indexOf('rv:')
+                return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10)
+            }
+
+            let edge = ua.indexOf('Edge/')
+            if (edge > 0) {
+                return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10)
+            }
+            return false
+        }
+    },
+    mounted () {
+        this.detectIE()
     }
 }
 </script>
@@ -83,7 +101,7 @@ export default {
         position    relative
         padding-top 0
         .pc-background
-            background-color    #efeff7
+            background-color    rgba(22, 156, 221, 0.01)
             display             block
             position            absolute
             top                 -1px
@@ -93,16 +111,8 @@ export default {
             z-index             -1
             overflow            hidden
             .rect0,
-            .rect1,
-            .rect2,
-            .rect3,
-            .rect4,
-            .rect5,
             .woman
                 position    absolute
-                svg
-                    height  100%
-                    width   auto
             .rect0
                 top     0
                 bottom  0
@@ -110,66 +120,57 @@ export default {
                 right   0
                 background  #9cc9df
                 opacity     0.2
-            .rect1,
-            .rect2,
-            .rect3
-                opacity     .33
-            .rect1
-                top     0
-                bottom  0
-                left    0
-                right   0
-            .rect2
-                top     35%
-                bottom  0
-                left    0
-                right   0
-            .rect3
-                top     80%
-                bottom  0
-                left    0
-                right   0
-            .rect4
-                top             0
-                bottom          0
-                left            0
-                right           0
-                padding-left    24%
-                transform       rotate(180deg)
-                opacity         .12
-            .rect5
-                top         0
-                left        76%
-                right       0
-                bottom      0
-                background  #169CDD
-                opacity     .12
             .woman
                 top     0
                 left    0
                 right   0
                 bottom  0
+                background rgba(22, 156, 221, 0.12)
                 img
                     width   auto
                     height  100%
         nav
-            display                 grid
-            grid-template-columns   repeat(3, 1fr)
-            grid-gap                3em
             padding-left            30%
             padding-right           5%
             padding-top             4em
+            flex-flow               row
+            flex-wrap               wrap
+            @supports (display: grid) 
+                display                 grid
+                grid-template-columns   repeat(3, 1fr)
+                grid-gap                3em
             a,
-            .quote
-                width       100%
+            .quote,
+            .ghost
                 max-width   none
                 margin      0
-                height      100%                
+                width       30%
+                flex        0 0 auto
+                margin-top  5%
+                @supports (display: grid) 
+                    height      100%
+                    width       100%
+                    margin-top  0
                 h1
                     padding     2em 0
                     font-size   1.2em
                     height      auto
                     line-height initial
+                    position    relative
+                    &:hover
+                        &:after
+                            width       42px
+                            position    absolute
+                            content     ''
+                            height      1px
+                            background  #169cdd
+                            top         50%
+                            margin-top  1em
+                            left        -0.75em
+                &.a,
+                &.b,
+                &.c
+                    margin-top  0
             .quote
                 text-align  left
                 background  none
@@ -191,4 +192,7 @@ export default {
                 grid-column-start: 2
             .quote
                 display flex
+            .ghost
+                @supports (display: grid)
+                    display none
 </style>

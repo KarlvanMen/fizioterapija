@@ -44,7 +44,8 @@ export default {
         display none
     .section
         .background
-            height              160px
+            height              0
+            padding-bottom      56.25%
             background-size     cover
             background-repeat   no-repeat
         .text

@@ -8,15 +8,17 @@
                 router-link(:to="{ path: pageInfo.link.url}")
                     h4 {{pageInfo.link.title}}
         ul.section-container
-            li.section(v-for="section, index in text" @click="toggleSection(index)" :class="'section-' + (index%3 + 1)")
-                .background(v-bind:style="{'background-image': 'url('+section.image+')'}")
-                h2  {{section.title}}
-                .text
-                    h3  {{section.text.title}}
-                    p.desc   {{section.text.text}}
-                    p.pricing   {{section.text.price}}
-            li.section.extra(v-for="extra in extraEl")
-                .background(v-bind:style="{'background-image': 'url('+extraImg[extra-1]+')'}")
+            div(v-for="section, index in text")
+                li.section(@click="toggleSection(index)" :class="'section-' + (index%3 + 1)")
+                    .background(v-bind:style="{'background-image': 'url('+section.image+')'}")
+                    h2  {{section.title}}
+                    .text
+                        h3  {{section.text.title}}
+                        p.desc   {{section.text.text}}
+                        p.pricing   {{section.text.price}}
+            div(v-for="extra in extraEl")
+                li.section.extra
+                    .background(v-bind:style="{'background-image': 'url('+extraImg[extra-1]+')'}")
 </template>
 
 <script>
@@ -93,6 +95,7 @@ export default {
         padding 0
         li
             position    relative
+            cursor      pointer
             h2
                 text-transform  uppercase
                 font-size       1.05em  
@@ -130,6 +133,8 @@ export default {
             &.open
                 overflow        hidden
                 width           100%
+                margin-bottom   0 !important
+                height          auto
                 h2
                     &::before
                         transform   rotate(-180deg)
@@ -137,8 +142,9 @@ export default {
                     animation-name      maxheight
                     animation-duration  0.5s
                     animation-fill-mode forwards
-                    position            relative
+                    max-height          none
                     margin              0
+                    opacity             1
                 &::before                    
                     position            absolute
                     content             ''
@@ -207,17 +213,22 @@ export default {
                         background-position center
                         width               1.5em
         ul
-            display                 grid
-            grid-template-columns   repeat(3, 1fr)
-            grid-gap                0
             background              #f2f2f2
+            @supports (display: grid) 
+                display                 grid
+                grid-template-columns   repeat(3, 1fr)
+                grid-gap                0
             li
                 list-style      none
-                padding         1em
                 height          0
-                padding-bottom  56.25%
                 z-index         1000
                 cursor          pointer
+                float           left
+                width           33%
+                padding-bottom  18.75%
+                @supports (display: grid) 
+                    padding-bottom  56.25%
+                    width           100%
                 &.extra
                     cursor      initial
                 .background

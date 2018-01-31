@@ -25,7 +25,7 @@
                 input#insurance(type="checkbox" v-model="insurance")
                 label(for="insurance")
                 div vajadzīgs rēķins apdrošināšanas kompānijai
-            .input-holder
+            .input-holder(v-if="insurance")
                 input(type="number" placeholder="PERSONAS KODS" v-model="persID")
                 span.white
                 span.blue
@@ -65,27 +65,37 @@ export default {
     @keyframes slideIn {
         0% {
             top: 100%
+            bottom: 0;
         }
         100% {
             top: 63px
+            bottom: 0;
         }
     }
     .popup
         position    absolute
-        animation   slideIn .4s ease-out 0s 1 
         top         63px
         border-top  2px solid #3cace2
         left        0
         right       0
         bottom      0
-        background  #f2f2f2
+        background-color  #f2f2f2
         padding     2em 3em 0
-        transition  all .5s
         max-height  1000px
+        z-index     100
+        &:before
+            content     ''
+            position    absolute
+            left        0
+            right       0
+            bottom      0
+            top         0
+            background-color    #f2f2f2
+            z-index             -1
         &.small
-            top     94%
-            top     calc(100% - 40px)
-            bottom  auto
+            position    fixed
+            top         auto
+            bottom      0
             max-height  0.1em
             overflow    hidden
             .minimize

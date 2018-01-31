@@ -70,10 +70,10 @@ export default {
             .background
                 background  white
                 position    absolute
-                top     0
+                top     -5px
                 left    -5px
-                width   100%
-                height  calc(100% - 3.5em)
+                right   5px
+                bottom  3.5em
             input
                 width           100%
                 background      none
@@ -82,10 +82,11 @@ export default {
                 padding         1em 0 0.5em 0
                 position        relative
                 outline         none
-            input[type="submit" i]
+            input[type="submit"]
+                border          none
                 border          1px solid #3cace2
                 color           #3cace2
-                background      white
+                background-color    white
                 font-weight     bold
                 padding         1em
                 text-transform  uppercase
@@ -159,6 +160,7 @@ export default {
             display     flex
             align-items stretch
             flex        1 1 auto
+            min-height  600px
             .information
                 padding 1em 3em 1px
                 order   -1

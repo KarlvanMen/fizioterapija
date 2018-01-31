@@ -120,7 +120,7 @@ export default {
                         date: {
                             year: 2018,
                             month: 1,
-                            day: 30
+                            day: 31
                         },
                         time: '17:30',
                         title: 'Power Stretch Training',
@@ -390,21 +390,23 @@ export default {
             let months = this.$el.querySelectorAll('.month')
             setTimeout(() => {
                 let once = true
-                weeks.forEach((week) => {
+                for (let i = 0; i < weeks.length; i++) {
+                    let week = weeks[i]
                     if (week.querySelector('.today') !== null && once) {
                         week.classList.add('current')
                         once = false
                     } else {
                         week.classList.remove('current')
                     }
-                })
-                months.forEach((month) => {
+                }
+                for (let i = 0; i < months.length; i++) {
+                    let month = months[i]
                     if (month.querySelector('.current') !== null) {
                         month.classList.add('open')
                     } else {
                         month.classList.remove('open')
                     }
-                })
+                }
             }, 50)
         },
         previousWeek () {

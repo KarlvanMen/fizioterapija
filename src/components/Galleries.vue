@@ -131,13 +131,18 @@ export default {
                     background-repeat   no-repeat
                     background-position center
                     width               1.5em
-        .section-container
-            display                 grid
-            grid-template-columns   repeat(3, 1fr)
-            grid-gap                0  
+        .section-container 
+            @supports (display: grid) 
+                display                 grid
+                grid-template-columns   repeat(3, 1fr)
+                grid-gap                0
             .section
-                height  0
-                padding-bottom  56.25%
+                height          0
+                float           left
+                width           33%
+                padding-bottom  18.75%
+                @supports (display: grid) 
+                    padding-bottom  56.25%
                 .title
                     position    absolute
                     top         2em
@@ -151,5 +156,8 @@ export default {
                         height  100%
                         top     0
                         left    0
+                    h2
+                        display inline-block
+                        height  1.5em
 
 </style>

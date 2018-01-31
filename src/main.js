@@ -5,16 +5,19 @@ import App from './App'
 import Vuex from 'vuex'
 import router from './router'
 import VueYouTubeEmbed from 'vue-youtube-embed'
+import 'es6-promise/auto'
 
 Vue.config.productionTip = false
 
 Vue.use(Vuex)
 Vue.use(VueYouTubeEmbed)
 
-/* eslint-disable no-new */
+/* eslint-disable */
 new Vue({
     el: '#app',
     router,
     template: '<App/>',
     components: { App }
 })
+
+var Promise = require('es6-promise').Promise
