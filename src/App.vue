@@ -85,4 +85,10 @@ a
             height  61px
             a
                 margin  auto 0 auto 41px
+@media screen and (min-width: 1450px)
+    #app
+        .head
+            a
+                margin-left 50%
+                transform   translateX(-684px)
 </style>

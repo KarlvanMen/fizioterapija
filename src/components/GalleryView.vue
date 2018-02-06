@@ -10,7 +10,7 @@
                 .img-container(v-bind:style = "'background-image: url(' + open.url + ')'" v-if="open.type === 'image'")
                 youtube.youtube.no-pc(:video-id="urlToId(open.url)" player-width="100%" player-height="200px" :player-vars="{ controls: 1, modestbranding: 1, showinfo: 0, rel: 0 }" v-if="open.type === 'YouTube'")
                 youtube.youtube.pc(:video-id="urlToId(open.url)" player-width="100%" player-height="400px" :player-vars="{ controls: 1, modestbranding: 1, showinfo: 0, rel: 0 }" v-if="open.type === 'YouTube'")
-                youtube.youtube.pc-xl(:video-id="urlToId(open.url)" player-width="100%" player-height="600px" :player-vars="{ controls: 1, modestbranding: 1, showinfo: 0, rel: 0 }" v-if="open.type === 'YouTube'")
+                youtube.youtube.pc-xl(:video-id="urlToId(open.url)" player-width="80%" player-height="500px" :player-vars="{ controls: 1, modestbranding: 1, showinfo: 0, rel: 0 }" v-if="open.type === 'YouTube'")
         .container-all(:style="totheLeft")
             .arrow.prev.no-pc(@click="prev()" v-if="text[$route.params.id].images.length > 4 && mostLeft > 0")
             .arrow.next.no-pc(@click="next()" v-if="text[$route.params.id].images.length > 4 && mostLeft < (text[$route.params.id].images.length - 4)")
@@ -23,7 +23,7 @@
             .small-image.pc(v-for="image, index in text[$route.params.id].images" v-if="image.displayPC")
                 .container(v-if="image.type === 'image'" :style="backgroundImage(image.url)" @click="changeBig(index)")
                 .container(v-else-if="image.type === 'YouTube'" :style="backgroundImage(getYouTubeThumb(image.url))" @click="changeBig(index)")
-                    img(src='../assets/play.svg' alt="play icon")
+                    img(src='../assets/play.png' alt="play icon")
 </template>
 
 <script>
@@ -279,13 +279,19 @@ export default {
                     &.no-pc
                         display none
                     &.pc
-                        display flex
+                        display         flex
+                        align-items     center
+                        justify-content center
     @media screen and (min-width: 1500px)
         .big-container
             .container
+                max-width   1500px
+                margin      0 auto
                 .youtube
                     &.pc
                         display none
                     &.pc-xl
-                        display flex
+                        display         flex
+                        align-items     center
+                        justify-content center
 </style>

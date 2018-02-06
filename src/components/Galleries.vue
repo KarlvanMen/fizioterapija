@@ -142,6 +142,7 @@ export default {
                 width           33%
                 padding-bottom  18.75%
                 @supports (display: grid) 
+                    width           100%
                     padding-bottom  56.25%
                 .title
                     position    absolute
@@ -159,5 +160,14 @@ export default {
                     h2
                         display inline-block
                         height  1.5em
-
+    @media screen and (min-width: 1298px)
+        .title 
+            width           100%      
+            max-width       1080px
+            margin          0 auto 
+            padding-left    0
+        .section-container
+            max-width   1080px
+            width       100%
+            margin      0 auto
 </style>

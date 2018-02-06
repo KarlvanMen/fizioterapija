@@ -45,6 +45,16 @@ export default {
             insurance: false,
             persID: '',
             minimize: false,
+            style: ''
+        }
+    },
+    watch: {
+        minimize () {
+            if (this.minimize) {
+                document.body.style.overflow = 'visible'
+            } else {
+                document.body.style.overflow = 'hidden'
+            }
         }
     },
     methods: {
@@ -57,21 +67,18 @@ export default {
             this.$emit('close')
         },
     },
+    mounted () {
+        this.style = document.body.style.cssText
+        document.body.style.overflow = 'hidden'
+    },
+    beforeDestroy () {
+        document.body.style.cssText = this.style
+    },
     props: ['trainings']
 }
 </script>
 
 <style lang="stylus" scoped>
-    @keyframes slideIn {
-        0% {
-            top: 100%
-            bottom: 0;
-        }
-        100% {
-            top: 63px
-            bottom: 0;
-        }
-    }
     .popup
         position    absolute
         top         63px
@@ -79,7 +86,7 @@ export default {
         left        0
         right       0
         bottom      0
-        background-color  #f2f2f2
+        background-color  #fbfbfb
         padding     2em 3em 0
         max-height  1000px
         z-index     100
@@ -90,7 +97,7 @@ export default {
             right       0
             bottom      0
             top         0
-            background-color    #f2f2f2
+            background-color    #fbfbfb
             z-index             -1
         &.small
             position    fixed
@@ -141,7 +148,7 @@ export default {
                 span
                     position    absolute
                     &.white
-                        top         0px
+                        top         -2px
                         left        -5px
                         right       5px
                         bottom      2px
@@ -175,8 +182,8 @@ export default {
                     &:checked + label
                         background-image    url(../assets/checkbox-checked.svg)
                 label
-                    width   2em
-                    height  2em
+                    width   1.5em
+                    height  1.5em
                     background #ffffff url(../assets/checkbox.svg) no-repeat center
                     background-size contain
                     content ''
@@ -208,6 +215,10 @@ export default {
             right       0
             top         auto
             bottom      0
-            width       280px
+            width       220px
             z-index     100
+        @media screen and (min-width: 1660px)
+            left        50%
+            right       auto
+            margin-left 500px
 </style>

@@ -111,5 +111,10 @@ export default {
                 &:hover,
                 &.router-link-active
                     &:after
-                        left    -0.5em
+                        left    -0.5em  
+@media screen and (min-width: 1450px)
+    .menu
+        max-width   1450px
+        margin      0 auto
+        left        0
 </style>

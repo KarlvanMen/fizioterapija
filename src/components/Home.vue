@@ -195,4 +195,11 @@ export default {
             .ghost
                 @supports (display: grid)
                     display none
+@media screen and (min-width: 1298px)
+    .home
+        nav
+            width       100%
+            padding     4em 0 0 12%
+            max-width   1080px
+            margin      0 auto
 </style>

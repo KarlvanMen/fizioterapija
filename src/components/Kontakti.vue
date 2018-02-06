@@ -14,7 +14,7 @@
                     form
                         .background
                         input(type="text" v-bind:placeholder="name")
-                        input(type="number" v-bind:placeholder="phone")
+                        input(type="tel" v-bind:placeholder="phone")
                         input(type="email" v-bind:placeholder="email")
                         input(type="text" v-bind:placeholder="question")
                         input(type="submit" v-bind:value="send")
@@ -57,6 +57,7 @@ export default {
 .kontakti
     min-height  calc(100vh - 40px)
     background  #f2f2f2
+    padding-bottom  1px
     .pc
         display none
     .question,
@@ -93,11 +94,13 @@ export default {
                 border-radius   1.63em
                 width           100%
                 margin-top      2em
+                cursor          pointer
                 &:hover
                     background      #3cace2
                     color           white
     @media screen and (min-width: 1000px)
-        min-height  calc(100vh - 61px)
+        min-height  calc(100vh - 62px)
+        overflow    hidden
         display     flex
         flex-flow   column
         .pc
@@ -164,4 +167,21 @@ export default {
             .information
                 padding 1em 3em 1px
                 order   -1
+    @media screen and (min-width: 1298px)
+        .title 
+            width           100%      
+            max-width       1080px
+            margin          0 auto 
+            padding-left    0
+            position        relative
+            z-index         10
+            &:after
+                content     ''
+                position    absolute
+                top         0
+                left        -5000px
+                right       -5000px
+                bottom      0
+                background  white
+                z-index     -1
 </style>

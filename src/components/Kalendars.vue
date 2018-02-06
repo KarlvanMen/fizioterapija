@@ -31,10 +31,23 @@ export default {
     .pc
         display none
     .info
-        padding 1em 2em 0
+        padding     1em 2em 0
+        margin-bottom   10px
+        max-width       960px
+        margin          0 auto
         p
-            border 1px solid #169cdd
-            padding 1em
+            border      1px solid #169cdd
+            padding     1em
+            position    relative
+            &:after
+                content     ''
+                position    absolute
+                top         5px
+                left        -5px
+                right       5px
+                bottom      -5px
+                background  #ffffff
+                z-index     -1
     @media screen and (min-width: 1000px)
         overflow    visible
         position    relative
@@ -58,7 +71,7 @@ export default {
                 border-right    300px solid #169CDD      
                 opacity         0.12
             .bottom-left
-                position        absolute
+                position        fixed
                 top             auto
                 left            0
                 right           auto
@@ -67,24 +80,23 @@ export default {
                 border-bottom   250px solid #169CDD
                 border-right    250px solid transparent
                 opacity         0.12
+    @media screen and (min-width: 1450px)
         .info
             position    absolute
             width       208px
-            bottom      -1em
-            left        1em
+            bottom      0
+            left        50%
+            margin-left -725px
             top         auto
             font-size   0.8em
-            z-index     -1
             padding     0
+            z-index     -1
             p
                 margin  0
-            &:after
-                content     ''
-                position    absolute
-                top         5px
-                left        -5px
-                right       5px
-                bottom      -5px
-                background  #ffffff
-                z-index     -10
+            
+    // @media screen and (min-width: 1200px)
+    //     .info
+    //         position    fixed
+    //         left    3%
+    //         bottom  3em
 </style>

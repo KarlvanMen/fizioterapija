@@ -6,9 +6,9 @@
                 .arrow.prev.pc(@click="changePreviousMonth" v-if="showPrev")
                 h1  {{ text.months[(activeDate.month-1)] }}
                 .arrow.next.pc(@click="changeNextMonth" v-if="showNext")                
-                p   Pirms nākt uz nodarbību, rezervē sev vietu noklikšķinot uz&nbsp;tās
-            .big-container
-                .arrow.prev.no-pc(@click="previousWeek")
+                p   Pirms nākt uz nodarbību, rezervē sev vietu noklikšķinot uz&nbsp;tās                
+            .big-container(v-if="dates.nextMonth.length")
+                .arrow.prev.no-pc(@click="previousWeek" v-if="activeDate.day + activeDate.month * 31 + activeDate.year > dates.thisMonth[0][0].day + dates.thisMonth[0][0].month * 31 + 2024")
                 .month.prev-month
                     .week(v-for="week in dates.previousMonth")
                         .day(v-for="day, index in week" @click="changeToday(day, index)" :class="{'not-current-month': !(day.month === activeDate.month), 'today': (day.day === activeDate.day && day.month === activeDate.month && day.year === activeDate.year)}")
@@ -20,6 +20,8 @@
                                         .title {{training.title}}
                                         .time {{training.time}}
                 .month.this-month
+                    .daysOfWeek.pc
+                        .day(v-for="day in text.daysFull") {{day}}
                     .week(v-for="week in dates.thisMonth")
                         .day(v-for="day, index in week" @click="changeToday(day, index)" :class="{'not-current-month': !(day.month === activeDate.month), 'today': (day.day === activeDate.day && day.month === activeDate.month && day.year === activeDate.year)}")
                             .weekday {{text.days[index]}}
@@ -30,6 +32,8 @@
                                         .title {{training.title}}
                                         .time {{training.time}}
                 .month.next-month
+                    .daysOfWeek.pc
+                        .day(v-for="day in text.daysFull") {{day}}
                     .week(v-for="week in dates.nextMonth")
                         .day(v-for="day, index in week" @click="changeToday(day, index)" :class="{'not-current-month': !(day.month === activeDate.month), 'today': (day.day === activeDate.day && day.month === activeDate.month && day.year === activeDate.year)}")
                             .weekday {{text.days[index]}}
@@ -39,11 +43,11 @@
                                     .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active}")
                                         .title {{training.title}}
                                         .time {{training.time}}
-                .arrow.next.no-pc(@click="nextWeek")
+                .arrow.next.no-pc(@click="nextWeek" v-if="activeDate.day + activeDate.month * 31 + activeDate.year < dates.nextMonth[dates.nextMonth.length - 1][0].day + dates.nextMonth[dates.nextMonth.length - 1][0].month * 31 + dates.nextMonth[dates.nextMonth.length - 1][0].year + 6")
         .main.no-pc
             .trainings
                 template(v-for="training, index in sample.trainings")
-                    .training-container(v-if="trainingIsToday(training)" @click="addTraining(index)" :class="{active: training.active}")
+                    .training-container(v-if="trainingIsToday(training)" @click="addTraining(index)" :class="{active: training.active, grey: training.date.day + training.date.month * 31 + training.date.year < currentDate.day + currentDate.month * 31 + currentDate.year}")
                         .title {{training.title}}
                         .time {{training.time}}
         .reservation
@@ -100,7 +104,7 @@ export default {
                         date: {
                             year: 2018,
                             month: 2,
-                            day: 2
+                            day: 15
                         },
                         time: '17:30',
                         title: 'Power Stretch Training',
@@ -109,8 +113,8 @@ export default {
                     {
                         date: {
                             year: 2018,
-                            month: 1,
-                            day: 20
+                            month: 2,
+                            day: 2
                         },
                         time: '17:30',
                         title: 'Power Stretch Training',
@@ -132,7 +136,6 @@ export default {
             thisMonth: {},
             nextMonth: {},
             dates: {
-                previousMonth: [],
                 thisMonth: [],
                 nextMonth: []
             },
@@ -181,69 +184,41 @@ export default {
         },
         addDates () {
             let today = new Date()
-
             this.activeDate = {
                 day: today.getDate(),
-                dayOfTheWeek: today.getDay(),
+                dayOfTheWeek: today.getDay() < 1 ? 7 : today.getDay(),
                 month: today.getMonth() + 1,
                 year: today.getFullYear()
             }
-            this.currentDate = this.activeDate
-            //  Previous month
-            let daysOfPrePreMonth = []
-            let prevMonth = today.getMonth() - 1
-            let prevMonthYear = today.getFullYear()
-            if (prevMonth < 0) {
-                prevMonth = 12
-                prevMonthYear--
+            this.currentDate = {
+                day: today.getDate(),
+                dayOfTheWeek: today.getDay() < 1 ? 7 : today.getDay(),
+                month: today.getMonth() + 1,
+                year: today.getFullYear()
             }
-            let prePreMonth = prevMonth - 1
-            let prePreMonthYear = prevMonthYear
-            if (prePreMonth < 0) {
-                prePreMonth = 12
-                prePreMonthYear--
-            }
-            let lastDayOfPrePreMonth = new Date(prePreMonthYear, prePreMonth, 1).getDay() - 1
-            if (lastDayOfPrePreMonth < 0) lastDayOfPrePreMonth = 7 + lastDayOfPrePreMonth
-            let lengthOfPrePreMonth = new Date(prePreMonthYear, prePreMonth, 0).getDate()
-            for (let i = 0; i < lastDayOfPrePreMonth; i++) {
-                daysOfPrePreMonth.push(lengthOfPrePreMonth - i)
-            }
-            daysOfPrePreMonth.reverse()
-
-            let daysOfPrevMonth = []
-            let prevMonthDays = []
-            let prevMonthLastDays = new Date(prevMonthYear, prevMonth, 0).getDate()
-            let thisMonthFirstDayOfTheWeek = new Date(today.getFullYear(), today.getMonth(), 1).getDay() - 1
-            if (thisMonthFirstDayOfTheWeek < 0) thisMonthFirstDayOfTheWeek = 6
-            for (let i = 0; i < thisMonthFirstDayOfTheWeek; i++) {
-                daysOfPrevMonth.push(prevMonthLastDays - i)
-            }
-            daysOfPrevMonth.reverse()
-            for (let i = 0; i < new Date(prevMonthYear, prevMonth, 0).getDate(); i++) {
-                prevMonthDays.push(i + 1)
-            }
-            let thisMonthDaysForPrevMonth = []
-            for (let i = 0; i < thisMonthFirstDayOfTheWeek; i++) {
-                thisMonthDaysForPrevMonth.push(i + 1)
-            }
-
-            let daysOfPrevMonthView = {
-                DaysOfPrevMonth: daysOfPrePreMonth,
-                DaysOfThisMonth: prevMonthDays,
-                DaysOfNextMonth: thisMonthDaysForPrevMonth,
-            }
-
             //  This month
             let daysOfThisMonth = []
-            for (let i = 0; i < new Date(today.getFullYear(), today.getMonth(), 0).getDate(); i++) {
+            let firstDayOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1).getDay()
+            if (firstDayOfThisMonth === 0) firstDayOfThisMonth = 7
+            let daysOfPrevMonth = []
+            if (firstDayOfThisMonth > 1) {
+                let prevMonth = today.getMonth() < 2 ? today.getMonth() - 1 : 12
+                let prevYear = today.getMonth() < 2 ? today.getFullYear() - 1 : today.getFullYear()
+
+                let lastDateOfPrevMonth = new Date(prevYear, prevMonth, 0).getDate()
+                for (let i = 0; i < firstDayOfThisMonth - 1; i++) {
+                    daysOfPrevMonth.push(lastDateOfPrevMonth - i)
+                }
+                daysOfPrevMonth.reverse()
+            }
+            for (let i = 0; i < new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate(); i++) {
                 daysOfThisMonth.push(i + 1)
             }
             let daysOfNextMonth = []
-            let lengthOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 0).getDate()
-            let thisMonthLastDay = new Date(today.getFullYear(), today.getMonth(), lengthOfThisMonth).getDay() - 1
-            if (thisMonthLastDay < 0) thisMonthLastDay = 6
-            for (let i = thisMonthLastDay; i < 6; i++) {
+            let lengthOfThisMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
+            let thisMonthLastDay = firstDayOfThisMonth + lengthOfThisMonth % 7 - 1
+            if (thisMonthLastDay > 7) thisMonthLastDay = 7 - thisMonthLastDay
+            for (let i = thisMonthLastDay; i < 7; i++) {
                 daysOfNextMonth.push(i - thisMonthLastDay + 1)
             }
             let daysOfThisMonthView = {
@@ -253,11 +228,11 @@ export default {
             }
             //  Next  month
             let daysOfNextMonthPrevMonth = []
-            for (let i = 0; i <= thisMonthLastDay; i++) {
+            for (let i = 0; i < thisMonthLastDay; i++) {
                 daysOfNextMonthPrevMonth.push(lengthOfThisMonth - i)
             }
             daysOfNextMonthPrevMonth.reverse()
-            let nextmonth = today.getMonth() === 0 ? today.getMonth() + 2 : today.getMonth() + 1
+            let nextmonth = today.getMonth() + 2
             let nextYear = today.getFullYear()
             if (nextmonth > 12) {
                 nextmonth = 1
@@ -279,7 +254,6 @@ export default {
                 DaysOfThisMonth: daysOfNextMonthCount,
                 DaysOfNextMonth: daysOfNextNextMonth,
             }
-            this.previousMonth = daysOfPrevMonthView
             this.thisMonth = daysOfThisMonthView
             this.nextMonth = daysOfNextMonthView
             this.sortByWeeks()
@@ -301,35 +275,7 @@ export default {
             }
             let weeks = []
             let tempWeek = []
-            let length = this.previousMonth.DaysOfPrevMonth.length + this.previousMonth.DaysOfThisMonth.length + this.previousMonth.DaysOfNextMonth.length
-            for (let i = 0; i < length; i++) {
-                if (i < this.previousMonth.DaysOfPrevMonth.length) {
-                    tempWeek.push({
-                        day: this.previousMonth.DaysOfPrevMonth[i],
-                        month: months.prePreMonth,
-                        year: years.prePreMonth,
-                    })
-                } else if (i < (this.previousMonth.DaysOfPrevMonth.length + this.previousMonth.DaysOfThisMonth.length)) {
-                    tempWeek.push({
-                        day: i + 1 - this.previousMonth.DaysOfPrevMonth.length,
-                        month: months.prevMonth,
-                        year: years.prevMonth,
-                    })
-                } else {
-                    tempWeek.push({
-                        day: i + 1 - this.previousMonth.DaysOfPrevMonth.length - this.previousMonth.DaysOfThisMonth.length,
-                        month: months.thisMonth,
-                        year: years.thisMonth,
-                    })
-                }
-                if (tempWeek.length === 7) {
-                    weeks.push(tempWeek)
-                    tempWeek = []
-                }
-            }
-            this.dates.previousMonth = weeks
-            weeks = []
-            length = this.thisMonth.DaysOfPrevMonth.length + this.thisMonth.DaysOfThisMonth.length + this.thisMonth.DaysOfNextMonth.length
+            let length = this.thisMonth.DaysOfPrevMonth.length + this.thisMonth.DaysOfThisMonth.length + this.thisMonth.DaysOfNextMonth.length
             for (let i = 0; i < length; i++) {
                 if (i < this.thisMonth.DaysOfPrevMonth.length) {
                     tempWeek.push({
@@ -389,12 +335,10 @@ export default {
             let weeks = this.$el.querySelectorAll('.week')
             let months = this.$el.querySelectorAll('.month')
             setTimeout(() => {
-                let once = true
                 for (let i = 0; i < weeks.length; i++) {
                     let week = weeks[i]
-                    if (week.querySelector('.today') !== null && once) {
+                    if (week.querySelector('.today') !== null) {
                         week.classList.add('current')
-                        once = false
                     } else {
                         week.classList.remove('current')
                     }
@@ -407,6 +351,8 @@ export default {
                         month.classList.remove('open')
                     }
                 }
+                let openMonths = this.$el.querySelectorAll('.month.open')
+                if (openMonths.length > 1) openMonths[0].classList.remove('open')
             }, 50)
         },
         previousWeek () {
@@ -596,6 +542,13 @@ export default {
                 display         flex
                 justify-content center
                 margin-top      30px
+                &.grey
+                    pointer-events  none
+                    .title
+                        border      1px solid #b0b0b0
+                    .time
+                        background  #b0b0b0
+                        border      1px solid #b0b0b0
                 .title
                     width   170px
                     border  1px solid #169cdd
@@ -615,10 +568,7 @@ export default {
                     .time
                         background  #17c37b
     @media screen and (min-width: 1000px)
-        width           59%
-        margin-left     auto
-        z-index         10
-        margin-right    18%
+        z-index 10
         .pc
             display block
         .no-pc
@@ -626,7 +576,9 @@ export default {
         .header
             &:after
                 display none
-            .title
+            .title 
+                display block
+                padding 35px 0 2em 218px
                 .arrow
                     display inline-block
                     width   1em
@@ -666,26 +618,62 @@ export default {
                     position        relative
                     margin-left     1em
             .big-container
-                margin-bottom   2em
+                margin 0 1em 2em
                 .month
                     position        relative
                     z-index         100
                     &:before
                         content     ''
                         position    absolute
-                        top         -10px
-                        left        -10px
-                        right       -2px
-                        bottom      -10px
+                        top         2em
+                        left        -15px
+                        right       -10px
+                        bottom      -20px
                         background  #f2f2f2
                         z-index     -1
+                    .daysOfWeek
+                        display     flex
+                        position    relative
+                        .day
+                            flex            0 1 auto
+                            width           14.2%
+                            max-width       14.2%
+                            border-bottom   1px solid #3cace2
+                            border-left     1px solid #3cace2
+                            padding         5px 0 20px
+                            text-align      center
+                            text-transform  uppercase
+                            position        relative
+                            font-size       0.8em
+                            &:first-child
+                                &:before 
+                                    content     ''
+                                    position    absolute
+                                    top         0
+                                    left        -25px
+                                    right       100%
+                                    bottom      -1px
+                                    border-bottom   1px solid #3cace2
                     .week
                         display flex
                         height  auto
                         &:not(.current)
                             display flex
+                        &:last-child
+                            .day
+                                position    relative
+                                &:after
+                                    content     ''
+                                    position    absolute
+                                    top         100%
+                                    left        -1px
+                                    right       -1px
+                                    bottom      -10px
+                                    border-left 1px solid #3cace2
                         .day
-                            flex            1 1 auto
+                            flex            0 1 auto
+                            max-width       14.2%
+                            width           14.2%
                             float           none
                             text-align      left
                             background      #f2f2f2
@@ -700,7 +688,7 @@ export default {
                                     content     ''
                                     position    absolute
                                     top         0
-                                    left        -10px
+                                    left        -20px
                                     right       100%
                                     bottom      -1px
                                     border-bottom   1px solid #3cace2
@@ -717,8 +705,10 @@ export default {
                                     flex-wrap       wrap
                                     cursor          pointer
                                     .title
-                                        border      1px solid #169cdd
-                                        padding     5px 2px
+                                        border          1px solid #169cdd
+                                        padding         5px 2px
+                                        flex            1 1 auto
+                                        margin-right    0
                                     .time
                                         flex            1 1 auto
                                         background      #169cdd
@@ -748,4 +738,17 @@ export default {
                                     opacity 0
                                 .trainings
                                     display none
+    @media screen and (min-width: 1298px)
+        .header
+            .title 
+                width           100%      
+                max-width       1080px
+                margin          0 auto 
+                padding-left    0
+    @media screen and (min-width: 1400px)
+        .header
+            .big-container
+                width           100%
+                max-width       960px
+                margin          0 auto
 </style>

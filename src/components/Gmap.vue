@@ -259,15 +259,23 @@ export default {
                 }
             ],
         }
-        GoogleMapsLoader.KEY = 'AIzaSyA4ADLbwhDEbOpNpixZrpUi4D_edka4R4A';
+        GoogleMapsLoader.KEY = 'AIzaSyA4ADLbwhDEbOpNpixZrpUi4D_edka4R4A'
         let self = this
         GoogleMapsLoader.load(function(google) {
             let gMap = new google.maps.Map(element, options)
             self.markerCoordinates.forEach((coord) => {
-                const position = new google.maps.LatLng(coord.lat, coord.lng)
-                const marker = new google.maps.Marker({
+                let position = new google.maps.LatLng(coord.lat, coord.lng)
+                let marker = new google.maps.Marker({
                     position,
-                    map: gMap
+                    map: gMap,
+                    icon: '../assets/gmarker.svg',
+                    // icon: 'https://maps.google.com/mapfiles/kml/shapes/parking_lot_maps.png'
+                })
+                let infowindow = new google.maps.InfoWindow({
+                    content: '<b>ADRESE</b><br>' + coord.street
+                })
+                marker.addListener('click', function() {
+                    infowindow.open(map, marker)
                 })
             })   
         }) 
@@ -282,6 +290,17 @@ export default {
     width   100%
     height  200px
     background  #f2f2f2
+    .gm-style
+        .gm-style-iw
+            color   red
+            &:after
+                content     ''
+                position    absolute
+                top         -25%
+                left        -25%
+                width       150%
+                height      150%
+                background  #444a5a
     @media screen and (min-width: 1000px)
         height  auto
         flex    1

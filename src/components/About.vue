@@ -55,7 +55,7 @@ export default {
                 text-transform  uppercase
                 font-size       1.1em
     @media screen and (min-width: 1000px)
-        padding 0
+        padding     0
         position    relative
         .pc
             display block
@@ -142,7 +142,8 @@ export default {
                 border-right    450px solid transparent
                 opacity         0.12
         .section
-            margin-bottom   1em
+            max-width   1080px
+            margin      0 auto 1em
             .background,
             .text
                 display         inline-block
@@ -155,4 +156,10 @@ export default {
                 width           40%
                 height          0
                 padding-bottom  22.5%
+    @media screen and (min-width: 1298px)
+        .title 
+            width           100%      
+            max-width       1080px
+            margin          0 auto 
+            padding-left    0
 </style>
