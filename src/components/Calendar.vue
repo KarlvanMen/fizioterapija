@@ -15,7 +15,7 @@
                             .weekday {{text.days[index]}}
                             .date {{day.day}}
                             .trainings.pc.grey
-                                template(v-for="training, index in sample.trainings")
+                                template(v-for="training, index in trainings")
                                     .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active}")
                                         .title {{training.title}}
                                         .time {{training.time}}
@@ -27,7 +27,7 @@
                             .weekday {{text.days[index]}}
                             .date {{day.day}}
                             .trainings.pc
-                                template(v-for="training, index in sample.trainings")
+                                template(v-for="training, index in trainings")
                                     .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active, grey: training.date.day < currentDate.day}")
                                         .title {{training.title}}
                                         .time {{training.time}}
@@ -39,19 +39,19 @@
                             .weekday {{text.days[index]}}
                             .date {{day.day}}
                             .trainings.pc
-                                template(v-for="training, index in sample.trainings")
+                                template(v-for="training, index in trainings")
                                     .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active}")
                                         .title {{training.title}}
                                         .time {{training.time}}
                 .arrow.next.no-pc(@click="nextWeek" v-if="activeDate.day + activeDate.month * 31 + activeDate.year < dates.nextMonth[dates.nextMonth.length - 1][0].day + dates.nextMonth[dates.nextMonth.length - 1][0].month * 31 + dates.nextMonth[dates.nextMonth.length - 1][0].year + 6")
         .main.no-pc
             .trainings
-                template(v-for="training, index in sample.trainings")
+                template(v-for="training, index in trainings")
                     .training-container(v-if="trainingIsToday(training)" @click="addTraining(index)" :class="{active: training.active, grey: training.date.day + training.date.month * 31 + training.date.year < currentDate.day + currentDate.month * 31 + currentDate.year}")
                         .title {{training.title}}
                         .time {{training.time}}
         .reservation
-        Popup(v-if="displayPopup" v-bind:trainings="sample.trainings")
+        Popup(v-if="displayPopup" v-bind:trainings="trainings")
 </template>
 
 <script>
@@ -98,40 +98,6 @@ export default {
             date: [],
             activeDate: {},
             currentDate: {},
-            sample: {
-                trainings: [
-                    {
-                        date: {
-                            year: 2018,
-                            month: 2,
-                            day: 15
-                        },
-                        time: '17:30',
-                        title: 'Power Stretch Training',
-                        active: false
-                    },
-                    {
-                        date: {
-                            year: 2018,
-                            month: 2,
-                            day: 2
-                        },
-                        time: '17:30',
-                        title: 'Power Stretch Training',
-                        active: false
-                    },
-                    {
-                        date: {
-                            year: 2018,
-                            month: 1,
-                            day: 31
-                        },
-                        time: '17:30',
-                        title: 'Power Stretch Training',
-                        active: false
-                    }
-                ]
-            },
             prevMonth: {},
             thisMonth: {},
             nextMonth: {},
@@ -179,7 +145,7 @@ export default {
             return true
         },
         addTraining (i) {
-            this.sample.trainings[i].active = !this.sample.trainings[i].active
+            this.trainings[i].active = !this.trainings[i].active
             this.displayPopup = true
         },
         addDates () {
@@ -424,7 +390,8 @@ export default {
     },
     components: {
         Popup
-    }
+    },
+    props: ['trainings'],
 }
 </script>
 

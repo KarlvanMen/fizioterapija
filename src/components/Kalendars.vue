@@ -3,7 +3,7 @@
         .background.pc
             .top-right
             .bottom-left
-        Calendar
+        Calendar(:trainings="trainings")
         .info
             p Rezervē vietu nodarbībā, noklikšķinot uz tās. Izvēlētās nodarbības paradīsies zaļas. Lai pabeigtu rezervāciju aizpildi rezervācijas formu.
 </template>
@@ -21,7 +21,8 @@ export default {
     },
     components: {
         Calendar
-    }
+    },
+    props: ['trainings'],
 }
 </script>
 
@@ -93,10 +94,4 @@ export default {
             z-index     -1
             p
                 margin  0
-            
-    // @media screen and (min-width: 1200px)
-    //     .info
-    //         position    fixed
-    //         left    3%
-    //         bottom  3em
 </style>

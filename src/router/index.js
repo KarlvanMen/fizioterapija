@@ -18,7 +18,14 @@ export default new Router({
         {
             path: '/',
             name: 'Home',
-            component: Home
+            component: Home,
+            props: {
+                pageInfo: {
+                    title: '',
+                    link: {},
+                    quote: 'Lorem ipsum dolor sit amet, consectetuer'
+                }
+            }
         },
         {
             path: '*',
@@ -118,7 +125,11 @@ export default new Router({
                         title: '',
                         url: ''
                     }
-                }
+                },
+                extraImg: [
+                    'https://dl.dropboxusercontent.com/s/xtlpa77eoxxtlyd/9-briva-laucina.jpg?dl=0',
+                    'https://dl.dropboxusercontent.com/s/xtlpa77eoxxtlyd/9-briva-laucina.jpg?dl=0',
+                ]
             }
         },
         {
@@ -202,6 +213,40 @@ export default new Router({
             path: '/kalendars',
             name: 'Kalendars',
             component: Kalendars,
+            props: {
+                trainings: [
+                    {
+                        date: {
+                            year: 2018,
+                            month: 2,
+                            day: 15
+                        },
+                        time: '17:30',
+                        title: 'Power Stretch Training',
+                        active: false
+                    },
+                    {
+                        date: {
+                            year: 2018,
+                            month: 2,
+                            day: 2
+                        },
+                        time: '17:30',
+                        title: 'Power Stretch Training',
+                        active: false
+                    },
+                    {
+                        date: {
+                            year: 2018,
+                            month: 1,
+                            day: 31
+                        },
+                        time: '17:30',
+                        title: 'Power Stretch Training',
+                        active: false
+                    }
+                ],
+            }
         },
         {
             path: '/parmums',

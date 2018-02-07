@@ -9,8 +9,8 @@
                 h1  Fizioterapija
             router-link.b(:to="{ name: 'Vingrosana'}")
                 h1 Vingrošana
-            .quote.c
-                p {{quote}}
+            .quote.c(v-if="pageInfo.quote.length")
+                p {{pageInfo.quote}}
             .ghost
             router-link.movecenter.d(:to="{ name: 'Kalendars'}")
                 h1 Kalendārs
@@ -56,7 +56,8 @@ export default {
     },
     mounted () {
         this.detectIE()
-    }
+    },
+    props: ['pageInfo']
 }
 </script>
 

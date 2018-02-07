@@ -27,13 +27,9 @@ export default {
     name: 'FizioterapijaVingrosana',
     data () {
         return {
-            extraImg: [
-                'https://dl.dropboxusercontent.com/s/xtlpa77eoxxtlyd/9-briva-laucina.jpg?dl=0',
-                'https://dl.dropboxusercontent.com/s/xtlpa77eoxxtlyd/9-briva-laucina.jpg?dl=0',
-            ]
         }
     },
-    props: ['text', 'pageInfo'],
+    props: ['text', 'pageInfo', 'extraImg'],
     methods: {
         toggleSection (index) {
             let wide = false
