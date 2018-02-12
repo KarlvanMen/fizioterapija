@@ -1,35 +1,39 @@
 <template lang="pug">
-    .fizioterapija
+    .fizioterapija(v-if="pageInfo.id")
         .title.pc
-            h1  {{pageInfo.title}}
+            h1  {{pageInfo.pageTitle}}
             .quote(v-if="pageInfo.quote.length")
                 p   {{pageInfo.quote}}
-            .redir(v-if="pageInfo.link.title.length")
-                router-link(:to="{ path: pageInfo.link.url}")
-                    h4 {{pageInfo.link.title}}
+            .redir(v-if="pageInfo.pageLinkURL.length")
+                router-link(:to="{ path: pageInfo.pageLinkURL}")
+                    h4 {{pageInfo.pageLinkTitle}}
         ul.section-container
             div(v-for="section, index in text")
                 li.section(@click="toggleSection(index)" :class="'section-' + (index%3 + 1)")
                     .background(v-bind:style="{'background-image': 'url('+section.image+')'}")
                     h2  {{section.title}}
                     .text
-                        h3  {{section.text.title}}
-                        p.desc   {{section.text.text}}
-                        p.pricing   {{section.text.price}}
+                        h3  {{section.textTitle}}
+                        p.desc   {{section.textText}}
+                        p.pricing   {{section.textPrice}}
             div(v-for="extra in extraEl")
                 li.section.extra
                     .background(v-bind:style="{'background-image': 'url('+extraImg[extra-1]+')'}")
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'FizioterapijaVingrosana',
     data () {
         return {
+            pageInfo: {},
+            text: [],
+            extraImg: [],
+            nav: '',
         }
     },
-    props: ['text', 'pageInfo', 'extraImg'],
     methods: {
         toggleSection (index) {
             let wide = false
@@ -56,6 +60,34 @@ export default {
                 }
             }
         },
+        updateView () {
+            if (this.$route.name === 'Fizioterapija') {
+                let self = this
+                let interval = setInterval(function () {
+                    if (self.getFizioData !== 'undefined') {
+                        let data = self.getFizioData
+                        self.pageInfo = data.pageInfo[0]
+                        self.text = data.text
+                        self.extraImg = [
+                            data.pageInfo[0].extraImg1,
+                            data.pageInfo[0].extraImg2,
+                        ]
+                        clearInterval(interval)
+                    }
+                }, 100)
+            } else {
+                let self = this
+                let interval = setInterval(function () {
+                    if (self.getVingrData !== 'undefined') {
+                        let data = self.getVingrData
+                        self.pageInfo = data.pageInfo[0]
+                        self.text = data.text
+                        self.extraImg = []
+                        clearInterval(interval)
+                    }
+                }, 100)
+            }
+        }
     },
     updated () {
         let sections = document.querySelector('.fizioterapija').querySelectorAll('.section')
@@ -66,8 +98,20 @@ export default {
         }
     },
     computed: {
+        ...mapGetters([
+            'getFizioData',
+            'getVingrData'
+        ]),
         extraEl: function () {
             return this.text != null ? 3 - this.text.length % 3 !== 3 ? 3 - this.text.length % 3 : 0 : 0
+        }
+    },
+    mounted () {
+        this.updateView()
+    },
+    watch: {
+        '$route' (to, from) {
+            this.updateView()
         }
     }
 }

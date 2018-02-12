@@ -1,5 +1,5 @@
 <template lang="pug">
-    .calendar
+    .calendar(v-if="trainings")
         .header
             .title
                 h1.pc   Kalendārs
@@ -28,7 +28,7 @@
                             .date {{day.day}}
                             .trainings.pc
                                 template(v-for="training, index in trainings")
-                                    .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active, grey: training.date.day < currentDate.day}")
+                                    .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active, grey: training.day < currentDate.day}")
                                         .title {{training.title}}
                                         .time {{training.time}}
                 .month.next-month
@@ -47,11 +47,11 @@
         .main.no-pc
             .trainings
                 template(v-for="training, index in trainings")
-                    .training-container(v-if="trainingIsToday(training)" @click="addTraining(index)" :class="{active: training.active, grey: training.date.day + training.date.month * 31 + training.date.year < currentDate.day + currentDate.month * 31 + currentDate.year}")
+                    .training-container(v-if="trainingIsToday(training)" @click="addTraining(index)" :class="{active: training.active, grey: training.day + training.month * 31 + training.year < currentDate.day + currentDate.month * 31 + currentDate.year}")
                         .title {{training.title}}
                         .time {{training.time}}
         .reservation
-        Popup(v-if="displayPopup" v-bind:trainings="trainings")
+        Popup(v-if="displayPopup" :trainings="innerTrainings")
 </template>
 
 <script>
@@ -121,25 +121,25 @@ export default {
             }
         },
         trainingIsToday (tr) {
-            if (!(tr.date.year === this.activeDate.year)) {
+            if (!(parseInt(tr.year) === this.activeDate.year)) {
                 return false
             }
-            if (!(tr.date.month === this.activeDate.month)) {
+            if (!(parseInt(tr.month) === this.activeDate.month)) {
                 return false
             }
-            if (!(tr.date.day === this.activeDate.day)) {
+            if (!(parseInt(tr.day) === this.activeDate.day)) {
                 return false
             }
             return true
         },
         trainingIsThisDay (tr, day) {
-            if (!(tr.date.year === day.year)) {
+            if (!(parseInt(tr.year) === day.year)) {
                 return false
             }
-            if (!(tr.date.month === day.month)) {
+            if (!(parseInt(tr.month) === day.month)) {
                 return false
             }
-            if (!(tr.date.day === day.day)) {
+            if (!(parseInt(tr.day) === day.day)) {
                 return false
             }
             return true
@@ -382,6 +382,7 @@ export default {
         }
     },
     mounted: function () {
+        console.log(this.trainings)
         this.addDates()
         let self = this
         setTimeout(() => {
@@ -392,6 +393,9 @@ export default {
         Popup
     },
     props: ['trainings'],
+    computed: {
+        innerTrainings () { return this.trainings.slice() }
+    },
 }
 </script>
 

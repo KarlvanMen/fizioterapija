@@ -3,18 +3,20 @@
         .background.pc
             .top-right
             .bottom-left
-        Calendar(:trainings="trainings")
+        Calendar(:trainings="trainings" v-if="trainings.length")
         .info
             p Rezervē vietu nodarbībā, noklikšķinot uz tās. Izvēlētās nodarbības paradīsies zaļas. Lai pabeigtu rezervāciju aizpildi rezervācijas formu.
 </template>
 
 <script>
 import Calendar from './Calendar.vue'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'Kalendars',
     data () {
         return {
+            trainings: []
         }
     },
     methods: {
@@ -22,7 +24,21 @@ export default {
     components: {
         Calendar
     },
-    props: ['trainings'],
+    computed: {
+        ...mapGetters([
+            'getKalenData'
+        ])
+    },
+    mounted () {
+        let self = this
+        let interval = setInterval(function () {
+            if (self.getKalenData !== 'undefined') {
+                let data = self.getKalenData
+                self.trainings = data.trainings
+                clearInterval(interval)
+            }
+        }, 100)
+    }
 }
 </script>
 

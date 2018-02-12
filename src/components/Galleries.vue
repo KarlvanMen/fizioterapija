@@ -1,12 +1,12 @@
 <template lang="pug">
-    .galleries
+    .galleries(v-if="pageInfo.id")
         .title.pc
-            h1  {{pageInfo.title}}
+            h1  {{pageInfo.pageTitle}}
             .quote(v-if="pageInfo.quote.length")
-                p   {{pageInfo.quote}}
-            .redir(v-if="pageInfo.link.title.length")
-                router-link(:to="{ path: pageInfo.link.url}")
-                    h4 {{pageInfo.link.title}}
+                p(v-html="pageInfo.quote")
+            .redir(v-if="pageInfo.pageLinkURL.length")
+                router-link(:to="{ path: pageInfo.pageLinkURL}")
+                    h4 {{pageInfo.pageTitle}}
         ul.section-container
             router-link(v-for="section in text" :key="section.id" :to="{ name: 'Galerija', params: { id: (section.id - 1) }}")
                 li.section
@@ -16,11 +16,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'Galleries',
     data () {
         return {
+            text: [],
+            pageInfo: {}
         }
     },
     methods: {
@@ -30,7 +33,22 @@ export default {
             }
         }
     },
-    props: ['text', 'pageInfo'],
+    computed: {
+        ...mapGetters([
+            'getPhotoData'
+        ])
+    },
+    mounted () {
+        let self = this
+        let interval = setInterval(function () {
+            if (self.getPhotoData !== 'undefined') {
+                let data = self.getPhotoData
+                self.pageInfo = data.pageInfo[0]
+                self.text = data.text
+                clearInterval(interval)
+            }
+        }, 100)
+    }
 }
 </script>
 

@@ -1,12 +1,12 @@
 <template lang="pug">
-    .kontakti           
+    .kontakti(v-if="text.length")          
         .title.pc
-            h1  {{pageInfo.title}}
+            h1  {{pageInfo.pageTitle}}
             .quote(v-if="pageInfo.quote.length")
                 p(v-html="pageInfo.quote")
-            .redir(v-if="pageInfo.link.title.length")
-                router-link(:to="{ path: pageInfo.link.url}")
-                    h4 {{pageInfo.link.title}}
+            .redir(v-if="pageInfo.pageLinkURL.length")
+                router-link(:to="{ path: pageInfo.pageLinkURL}")
+                    h4 {{pageInfo.pageTitle}}
         .container
             Gmap(:markerCoordinates="text")
             .information
@@ -20,17 +20,18 @@
                         input(type="submit" v-bind:value="send")
                 .addresses
                     p
-                        b {{pageInfo.sia.title}}
+                        b {{pageInfo.siaTitle}}
                     p(v-for="address in text" v-html="address.streetFull")
                     p
                         b {{email}}
-                    p(v-html="pageInfo.sia.email")
+                    p(v-html="pageInfo.siaEmail")
                     p
                         b {{talrunis}}
-                    p(v-html="pageInfo.sia.phone")
+                    p(v-html="pageInfo.siaPhone")
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Gmap from './Gmap.vue'
 
 export default {
@@ -43,12 +44,29 @@ export default {
             question: 'JAUTĀJUMS',
             send: 'NOSŪTĪT',
             talrunis: 'TĀLRUNIS',
+            text: [],
+            pageInfo: {}
         }
     },
     components: {
         Gmap,
     },
-    props: ['text', 'pageInfo'],
+    computed: {
+        ...mapGetters([
+            'getKontaktiData'
+        ])
+    },
+    mounted () {
+        let self = this
+        let interval = setInterval(function () {
+            if (self.getKontaktiData !== 'undefined') {
+                let data = self.getKontaktiData
+                self.pageInfo = data.pageInfo[0]
+                self.text = data.text
+                clearInterval(interval)
+            }
+        }, 100)
+    }
 }
 </script>
 

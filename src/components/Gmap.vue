@@ -17,7 +17,10 @@ export default {
     },
     mounted: function () {
         const element = document.getElementById('map')
-        const mapCentre = this.markerCoordinates[0]
+        const mapCentre = {
+            lat: parseFloat(this.markerCoordinates[0].lat),
+            lng: parseFloat(this.markerCoordinates[0].lng)
+        }
         const options = {            
             zoom: 15,
             center: mapCentre,

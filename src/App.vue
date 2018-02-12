@@ -9,10 +9,20 @@
 
 <script>
 import Menu from './components/Menu.vue'
+import { mapActions } from 'vuex'
+
 export default {
     name: 'app',
     components: {
         Menu,
+    },
+    methods: {
+        ...mapActions({
+            data: 'FETCH_DATA'
+        }),
+    },
+    created () {
+        this.data()
     }
 }
 </script>

@@ -1,16 +1,16 @@
 <template lang="pug">
-    .about
+    .about(v-if="pageInfo.id")
         .bckgrnd.pc
             .top-right
             .top-right2
             .bottom-left           
         .title.pc
-            h1  {{pageInfo.title}}
+            h1  {{pageInfo.pageTitle}}
             .quote(v-if="pageInfo.quote.length")
                 p(v-html="pageInfo.quote")
-            .redir(v-if="pageInfo.link.title.length")
-                router-link(:to="{ path: pageInfo.link.url}")
-                    h4 {{pageInfo.link.title}}
+            .redir(v-if="pageInfo.pageLinkURL.length")
+                router-link(:to="{ path: pageInfo.pageLinkURL}")
+                    h4 {{pageInfo.pageTitle}}
         .section(v-for="section in text")
             .background(:style="backgroundImage(section.image)")
             .text
@@ -19,11 +19,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'About',
     data () {
         return {
+            text: [],
+            pageInfo: {}
         }
     },
     methods: {
@@ -33,7 +36,22 @@ export default {
             }
         }
     },
-    props: ['text', 'pageInfo'],
+    computed: {
+        ...mapGetters([
+            'getAboutData'
+        ])
+    },
+    mounted () {
+        let self = this
+        let interval = setInterval(function () {
+            if (self.getAboutData !== 'undefined') {
+                let data = self.getAboutData
+                self.pageInfo = data.pageInfo[0]
+                self.text = data.text
+                clearInterval(interval)
+            }
+        }, 100)
+    }
 }
 </script>
 

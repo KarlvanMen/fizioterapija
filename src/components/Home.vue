@@ -1,5 +1,5 @@
 <template lang="pug">
-    .home 
+    .home(v-if="getHomeData")
         .pc-background
             .woman
                 img(src='../assets/woman.png')
@@ -9,7 +9,7 @@
                 h1  Fizioterapija
             router-link.b(:to="{ name: 'Vingrosana'}")
                 h1 Vingrošana
-            .quote.c(v-if="pageInfo.quote.length")
+            .quote.c(v-if="pageInfo.quote")
                 p {{pageInfo.quote}}
             .ghost
             router-link.movecenter.d(:to="{ name: 'Kalendars'}")
@@ -19,12 +19,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'Home',
     data () {
         return {
-            quote: 'Lorem ipsum dolor sit amet, consectetuer',
+            pageInfo: {}
         }
     },
     methods: {
@@ -54,10 +55,22 @@ export default {
             return false
         }
     },
+    computed: {
+        ...mapGetters([
+            'getHomeData'
+        ])
+    },
     mounted () {
         this.detectIE()
-    },
-    props: ['pageInfo']
+        let self = this
+        let interval = setInterval(function () {
+            if (self.getAboutData !== 'undefined') {
+                let data = self.getAboutData
+                self.pageInfo = data.pageInfo[0]
+                clearInterval(interval)
+            }
+        }, 100)
+    }
 }
 </script>
 

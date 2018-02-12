@@ -4,7 +4,7 @@
         .trainings
             .training(v-for="tr in trainings" v-if="tr.active")
                 .date
-                    p {{tr.date.day}}.{{tr.date.month}}.{{tr.date.year}} {{tr.time}}
+                    p {{tr.day}}.{{tr.month}}.{{tr.year}} {{tr.time}}
                     .delete(@click="tr.active = false")
                 p {{tr.title}}
         form(v-on:submit.prevent="submitTr()")
@@ -55,7 +55,7 @@ export default {
             } else {
                 document.body.style.overflow = 'hidden'
             }
-        }
+        },
     },
     methods: {
         submitTr () {

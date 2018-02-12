@@ -1,5 +1,5 @@
 <template lang="pug">
-    .gallery
+    .gallery(v-if="text.length")
         .title
             h1  {{text[$route.params.id].title}}
             .close(v-on:click="close()")
@@ -28,6 +28,7 @@
 
 <script>
 import { getIdFromURL } from 'vue-youtube-embed'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'Gallery',
@@ -37,10 +38,10 @@ export default {
             current: 0,
             mostLeft: 0,
             mostLeftPC: 0,
-            totheLeft: {}
+            totheLeft: {},
+            text: []
         }
     },
-    props: ['text'],
     methods: {
         backgroundImage (url) {
             return {
@@ -127,13 +128,26 @@ export default {
             }
         },
         close () {
-            this.$router.go(-1)
+            this.$router.push({ path: '/galerijas' })
         }
     },
     mounted () {
-        this.changeBig(0)
-        this.showFirst()
-    }
+        let self = this
+        let interval = setInterval(function () {
+            if (self.getPhotoData !== 'undefined') {
+                let data = self.getPhotoData
+                self.text = data.text
+                self.changeBig(0)
+                self.showFirst()
+                clearInterval(interval)
+            }
+        }, 100)
+    },
+    computed: {
+        ...mapGetters([
+            'getPhotoData'
+        ])
+    },
 }
 </script>
 
