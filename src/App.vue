@@ -1,9 +1,9 @@
 <template lang="pug">
   #app
-    .head
+    .head(v-if="$route.name !== 'Admin'")
       router-link(:to="{ name: 'Home'}")
         img(src="./assets/fizioaz.png")
-    Menu
+    Menu(v-if="$route.name !== 'Admin'")
     router-view
 </template>
 

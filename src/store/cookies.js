@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*\
 |*|
 |*|	:: cookies.js ::
@@ -22,7 +23,6 @@
 |*|	* docCookies.keys()
 |*|
 \*/
-
 var docCookies = {
 	getItem: function (sKey) {
 		if (!sKey) { return null; }

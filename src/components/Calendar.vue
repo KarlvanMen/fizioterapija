@@ -16,7 +16,7 @@
                             .date {{day.day}}
                             .trainings.pc.grey
                                 template(v-for="training, index in trainings")
-                                    .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active}")
+                                    .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active, full: training.full == '1'}")
                                         .title {{training.title}}
                                         .time {{training.time}}
                 .month.this-month
@@ -28,7 +28,7 @@
                             .date {{day.day}}
                             .trainings.pc
                                 template(v-for="training, index in trainings")
-                                    .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active, grey: training.day < currentDate.day}")
+                                    .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active, grey: training.day < currentDate.day, full: training.full == '1'}")
                                         .title {{training.title}}
                                         .time {{training.time}}
                 .month.next-month
@@ -40,14 +40,14 @@
                             .date {{day.day}}
                             .trainings.pc
                                 template(v-for="training, index in trainings")
-                                    .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active}")
+                                    .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active, full: training.full == '1'}")
                                         .title {{training.title}}
                                         .time {{training.time}}
                 .arrow.next.no-pc(@click="nextWeek" v-if="activeDate.day + activeDate.month * 31 + activeDate.year < dates.nextMonth[dates.nextMonth.length - 1][0].day + dates.nextMonth[dates.nextMonth.length - 1][0].month * 31 + dates.nextMonth[dates.nextMonth.length - 1][0].year + 6")
         .main.no-pc
             .trainings
                 template(v-for="training, index in trainings")
-                    .training-container(v-if="trainingIsToday(training)" @click="addTraining(index)" :class="{active: training.active, grey: training.day + training.month * 31 + training.year < currentDate.day + currentDate.month * 31 + currentDate.year}")
+                    .training-container(v-if="trainingIsToday(training)" @click="addTraining(index)" :class="{active: training.active, grey: training.day + training.month * 31 + training.year < currentDate.day + currentDate.month * 31 + currentDate.year, full: training.full == '1'}")
                         .title {{training.title}}
                         .time {{training.time}}
         .reservation
@@ -513,7 +513,8 @@ export default {
                 display         flex
                 justify-content center
                 margin-top      30px
-                &.grey
+                &.grey,
+                &.full
                     pointer-events  none
                     .title
                         border      1px solid #b0b0b0
@@ -654,6 +655,7 @@ export default {
                             min-height      70px
                             position        relative
                             padding         5px
+                            overflow        hidden
                             &:first-child
                                 &:before 
                                     content     ''
@@ -688,7 +690,8 @@ export default {
                                         justify-content center
                                         align-items     center
                                         padding         5px
-                                    &.grey
+                                    &.grey,
+                                    &.full
                                         pointer-events  none
                                         .title
                                             border      1px solid #b0b0b0

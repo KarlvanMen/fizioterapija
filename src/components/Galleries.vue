@@ -8,7 +8,7 @@
                 router-link(:to="{ path: pageInfo.pageLinkURL}")
                     h4 {{pageInfo.pageTitle}}
         ul.section-container
-            router-link(v-for="section in text" :key="section.id" :to="{ name: 'Galerija', params: { id: (section.id - 1) }}")
+            router-link(v-for="section in text.reverse()" :key="section.id" :to="{ name: 'Galerija', params: { id: (section.id - 1) }}")
                 li.section
                     .background(v-bind:style="{'background-image': 'url('+section.image+')'}")
                     .title

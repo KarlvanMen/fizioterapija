@@ -68,6 +68,7 @@ export default {
                         let data = self.getFizioData
                         self.pageInfo = data.pageInfo[0]
                         self.text = data.text
+                        self.text.reverse()
                         self.extraImg = [
                             data.pageInfo[0].extraImg1,
                             data.pageInfo[0].extraImg2,
@@ -82,6 +83,7 @@ export default {
                         let data = self.getVingrData
                         self.pageInfo = data.pageInfo[0]
                         self.text = data.text
+                        self.text.reverse()
                         self.extraImg = []
                         clearInterval(interval)
                     }

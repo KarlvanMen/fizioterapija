@@ -7,6 +7,7 @@ import About from '@/components/About'
 import Galleries from '@/components/Galleries'
 import GalleryView from '@/components/GalleryView'
 import Kontakti from '@/components/Kontakti'
+import Admin from '@/components/Admin'
 
 Vue.use(Router)
 
@@ -58,6 +59,11 @@ export default new Router({
             path: '/kontakti',
             name: 'Kontakti',
             component: Kontakti,
+        },
+        {
+            path: '/adminpage',
+            name: 'Admin',
+            component: Admin,
         }
     ]
 })
