@@ -1,26 +1,26 @@
 <template lang="pug">
     .gallery(v-if="text.length")
         .title
-            h1  {{text[$route.params.id].title}}
+            h1  {{textFiltered().title}}
             .close(v-on:click="close()")
         .big-container(v-if="open !== null")
             .container
                 .arrow.prev(@click="prevBig()" v-if="current > 0")
-                .arrow.next(@click="nextBig()" v-if="current < (text[$route.params.id].images.length - 1)")
+                .arrow.next(@click="nextBig()" v-if="current < (textFiltered().images.length - 1)")
                 .img-container(v-bind:style = "'background-image: url(' + open.url + ')'" v-if="open.type === 'image'")
                 youtube.youtube.no-pc(:video-id="urlToId(open.url)" player-width="100%" player-height="200px" :player-vars="{ controls: 1, modestbranding: 1, showinfo: 0, rel: 0 }" v-if="open.type === 'YouTube'")
                 youtube.youtube.pc(:video-id="urlToId(open.url)" player-width="100%" player-height="400px" :player-vars="{ controls: 1, modestbranding: 1, showinfo: 0, rel: 0 }" v-if="open.type === 'YouTube'")
                 youtube.youtube.pc-xl(:video-id="urlToId(open.url)" player-width="80%" player-height="500px" :player-vars="{ controls: 1, modestbranding: 1, showinfo: 0, rel: 0 }" v-if="open.type === 'YouTube'")
         .container-all(:style="totheLeft")
-            .arrow.prev.no-pc(@click="prev()" v-if="text[$route.params.id].images.length > 4 && mostLeft > 0")
-            .arrow.next.no-pc(@click="next()" v-if="text[$route.params.id].images.length > 4 && mostLeft < (text[$route.params.id].images.length - 4)")
-            .arrow.prev.pc(@click="prev()" v-if="text[$route.params.id].images.length > 10 && mostLeftPC > 0")
-            .arrow.next.pc(@click="next()" v-if="text[$route.params.id].images.length > 10 && mostLeftPC < (text[$route.params.id].images.length - 10)")
-            .small-image.no-pc(v-for="image, index in text[$route.params.id].images" v-if="image.display")
+            .arrow.prev.no-pc(@click="prev()" v-if="textFiltered().images.length > 4 && mostLeft > 0")
+            .arrow.next.no-pc(@click="next()" v-if="textFiltered().images.length > 4 && mostLeft < (textFiltered().images.length - 4)")
+            .arrow.prev.pc(@click="prev()" v-if="textFiltered().images.length > 10 && mostLeftPC > 0")
+            .arrow.next.pc(@click="next()" v-if="textFiltered().images.length > 10 && mostLeftPC < (textFiltered().images.length - 10)")
+            .small-image.no-pc(v-for="image, index in textFiltered().images" v-if="image.display")
                 .container(v-if="image.type === 'image'" :style="backgroundImage(image.url)" @click="changeBig(index)")
                 .container(v-else-if="image.type === 'YouTube'" :style="backgroundImage(getYouTubeThumb(image.url))" @click="changeBig(index)")
                     img(src='../assets/play.svg' alt="play icon")
-            .small-image.pc(v-for="image, index in text[$route.params.id].images" v-if="image.displayPC")
+            .small-image.pc(v-for="image, index in textFiltered().images" v-if="image.displayPC")
                 .container(v-if="image.type === 'image'" :style="backgroundImage(image.url)" @click="changeBig(index)")
                 .container(v-else-if="image.type === 'YouTube'" :style="backgroundImage(getYouTubeThumb(image.url))" @click="changeBig(index)")
                     img(src='../assets/play.png' alt="play icon")
@@ -43,6 +43,13 @@ export default {
         }
     },
     methods: {
+        textFiltered () {
+            for (let index = 0; index < this.text.length; index++) {
+                if (parseInt(this.text[index].id) - 1 === parseInt(this.$route.params.id)) {
+                    return this.text[index]
+                }
+            }
+        },
         backgroundImage (url) {
             return {
                 'background-image': 'url(' + url + ')'
@@ -61,35 +68,35 @@ export default {
         },
         changeBig (i) {
             this.current = i
-            this.open = this.text[this.$route.params.id].images[this.current]
+            this.open = this.textFiltered().images[this.current]
         },
         next () {
             this.mostLeft++
             this.mostLeftPC++
-            this.text[this.$route.params.id].images[this.mostLeft + 3].display = true
-            this.text[this.$route.params.id].images[this.mostLeft - 1].display = false
-            this.text[this.$route.params.id].images[this.mostLeftPC + 9].displayPC = true
-            this.text[this.$route.params.id].images[this.mostLeftPC - 1].displayPC = false
+            this.textFiltered().images[this.mostLeft + 3].display = true
+            this.textFiltered().images[this.mostLeft - 1].display = false
+            this.textFiltered().images[this.mostLeftPC + 9].displayPC = true
+            this.textFiltered().images[this.mostLeftPC - 1].displayPC = false
         },
         prev () {
             this.mostLeft--
-            this.text[this.$route.params.id].images[this.mostLeft].display = true
-            this.text[this.$route.params.id].images[this.mostLeft + 4].display = false
+            this.textFiltered().images[this.mostLeft].display = true
+            this.textFiltered().images[this.mostLeft + 4].display = false
             this.mostLeftPC--
-            this.text[this.$route.params.id].images[this.mostLeftPC].displayPC = true
-            this.text[this.$route.params.id].images[this.mostLeftPC + 10].displayPC = false
+            this.textFiltered().images[this.mostLeftPC].displayPC = true
+            this.textFiltered().images[this.mostLeftPC + 10].displayPC = false
         },
         nextBig () {
             this.mostLeft++
             this.current++
-            if (this.mostLeft + 4 > this.text[this.$route.params.id].images.length) this.mostLeft = this.text[this.$route.params.id].images.length - 4
-            if (this.current + 1 > this.text[this.$route.params.id].images.length) this.current = this.text[this.$route.params.id].images.length - 1
-            this.text[this.$route.params.id].images[this.mostLeft + 3].display = true
-            this.text[this.$route.params.id].images[this.mostLeft - 1].display = false
+            if (this.mostLeft + 4 > this.textFiltered().images.length) this.mostLeft = this.textFiltered().images.length - 4
+            if (this.current + 1 > this.textFiltered().images.length) this.current = this.textFiltered().images.length - 1
+            this.textFiltered().images[this.mostLeft + 3].display = true
+            this.textFiltered().images[this.mostLeft - 1].display = false
             this.mostLeftPC++
-            if (this.mostLeftPC + 10 > this.text[this.$route.params.id].images.length) this.mostLeftPC = this.text[this.$route.params.id].images.length - 10
-            this.text[this.$route.params.id].images[this.mostLeftPC + 9].displayPC = true
-            this.text[this.$route.params.id].images[this.mostLeftPC - 1].displayPC = false
+            if (this.mostLeftPC + 10 > this.textFiltered().images.length) this.mostLeftPC = this.textFiltered().images.length - 10
+            this.textFiltered().images[this.mostLeftPC + 9].displayPC = true
+            this.textFiltered().images[this.mostLeftPC - 1].displayPC = false
             this.changeBig(this.current)
         },
         prevBig () {
@@ -97,33 +104,33 @@ export default {
             this.current--
             if (this.mostLeft < 0) this.mostLeft = 0
             if (this.current < 0) this.current = 0
-            this.text[this.$route.params.id].images[this.mostLeft].display = true
-            this.text[this.$route.params.id].images[this.mostLeft + 4].display = false
+            this.textFiltered().images[this.mostLeft].display = true
+            this.textFiltered().images[this.mostLeft + 4].display = false
             this.mostLeftPC--
             if (this.mostLeftPC < 0) this.mostLeftPC = 0
-            this.text[this.$route.params.id].images[this.mostLeftPC].displayPC = true
-            this.text[this.$route.params.id].images[this.mostLeftPC + 10].displayPC = false
+            this.textFiltered().images[this.mostLeftPC].displayPC = true
+            this.textFiltered().images[this.mostLeftPC + 10].displayPC = false
             this.changeBig(this.current)
         },
         showFirst () {
             // MOBILE
-            if (this.text[this.$route.params.id].images.length > 4) {
+            if (this.textFiltered().images.length > 4) {
                 for (let i = 0; i < 4; i++) {
-                    this.text[this.$route.params.id].images[i].display = true
+                    this.textFiltered().images[i].display = true
                 }
             } else {
-                for (let i = 0; i < this.text[this.$route.params.id].images.length; i++) {
-                    this.text[this.$route.params.id].images[i].display = true
+                for (let i = 0; i < this.textFiltered().images.length; i++) {
+                    this.textFiltered().images[i].display = true
                 }
             }
             // PC
-            if (this.text[this.$route.params.id].images.length > 10) {
+            if (this.textFiltered().images.length > 10) {
                 for (let i = 0; i < 10; i++) {
-                    this.text[this.$route.params.id].images[i].displayPC = true
+                    this.textFiltered().images[i].displayPC = true
                 }
             } else {
-                for (let i = 0; i < this.text[this.$route.params.id].images.length; i++) {
-                    this.text[this.$route.params.id].images[i].displayPC = true
+                for (let i = 0; i < this.textFiltered().images.length; i++) {
+                    this.textFiltered().images[i].displayPC = true
                 }
             }
         },
@@ -134,7 +141,7 @@ export default {
     mounted () {
         let self = this
         let interval = setInterval(function () {
-            if (typeof self.getPhotoData.text !== 'undefined') {
+            if (typeof self.getPhotoData.pageInfo !== 'undefined') {
                 let data = self.getPhotoData
                 self.text = data.text
                 self.changeBig(0)
