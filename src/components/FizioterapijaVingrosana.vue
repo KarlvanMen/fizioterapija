@@ -64,7 +64,7 @@ export default {
             if (this.$route.name === 'Fizioterapija') {
                 let self = this
                 let interval = setInterval(function () {
-                    if (self.getFizioData !== 'undefined') {
+                    if (typeof self.getFizioData.pageInfo !== 'undefined') {
                         let data = self.getFizioData
                         self.pageInfo = data.pageInfo[0]
                         self.text = data.text
@@ -79,7 +79,7 @@ export default {
             } else {
                 let self = this
                 let interval = setInterval(function () {
-                    if (self.getVingrData !== 'undefined') {
+                    if (typeof self.getVingrData.pageInfo !== 'undefined') {
                         let data = self.getVingrData
                         self.pageInfo = data.pageInfo[0]
                         self.text = data.text

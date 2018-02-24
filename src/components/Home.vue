@@ -64,7 +64,7 @@ export default {
         this.detectIE()
         let self = this
         let interval = setInterval(function () {
-            if (self.getHomeData !== 'undefined') {
+            if (typeof self.getHomeData.pageInfo !== 'undefined') {
                 let data = self.getHomeData
                 self.pageInfo = data.pageInfo[0]
                 clearInterval(interval)

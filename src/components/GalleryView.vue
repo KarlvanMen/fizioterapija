@@ -134,7 +134,7 @@ export default {
     mounted () {
         let self = this
         let interval = setInterval(function () {
-            if (self.getPhotoData !== 'undefined') {
+            if (typeof self.getPhotoData.text !== 'undefined') {
                 let data = self.getPhotoData
                 self.text = data.text
                 self.changeBig(0)

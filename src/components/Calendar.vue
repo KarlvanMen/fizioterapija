@@ -382,7 +382,6 @@ export default {
         }
     },
     mounted: function () {
-        console.log(this.trainings)
         this.addDates()
         let self = this
         setTimeout(() => {

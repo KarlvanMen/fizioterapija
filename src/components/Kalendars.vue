@@ -32,7 +32,7 @@ export default {
     mounted () {
         let self = this
         let interval = setInterval(function () {
-            if (self.getKalenData !== 'undefined') {
+            if (typeof self.getKalenData.trainings !== 'undefined') {
                 let data = self.getKalenData
                 self.trainings = data.trainings
                 clearInterval(interval)

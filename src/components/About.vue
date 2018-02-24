@@ -44,7 +44,7 @@ export default {
     mounted () {
         let self = this
         let interval = setInterval(function () {
-            if (self.getAboutData !== 'undefined') {
+            if (typeof self.getAboutData.pageInfo !== 'undefined') {
                 let data = self.getAboutData
                 self.pageInfo = data.pageInfo[0]
                 self.text = data.text

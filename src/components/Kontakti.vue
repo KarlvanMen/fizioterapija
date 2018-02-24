@@ -59,7 +59,7 @@ export default {
     mounted () {
         let self = this
         let interval = setInterval(function () {
-            if (self.getKontaktiData !== 'undefined') {
+            if (typeof self.getKontaktiData.pageInfo !== 'undefined') {
                 let data = self.getKontaktiData
                 self.pageInfo = data.pageInfo[0]
                 self.text = data.text

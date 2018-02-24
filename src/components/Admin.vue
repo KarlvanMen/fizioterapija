@@ -767,7 +767,7 @@ export default {
         getData () {
             let self = this
             let interval = setInterval(function () {
-                if (self.getAllData !== 'undefined') {
+                if (typeof self.getAllData.fizioterapija.text !== 'undefined') {
                     let data = self.getAllData
                     // self.pageInfo = data.pageInfo[0]
                     self.info = data
@@ -1181,6 +1181,7 @@ export default {
                         images: [],
                         image: url.error === '' ? url.url : self.info.galerijas.text[i].image
                     }
+                    console.log(data)
                     self.EDIT_SECTION(data).then((res) => {
                         let dataI = {
                             corr_id: data.id,
@@ -1188,34 +1189,45 @@ export default {
                             type: [],
                             nav_url: 'galImg'
                         }
-                        let j = 0
+                        console.log(dataI)
+                        let p = []
                         for (let k = 0; k < self.tempGal[i].length; k++) {
+                            console.log(self.tempGal[i][k])
                             if (self.tempGal[i][k].type === 'image') {
-                                if (res[j].error === '') dataI.img.push(res[j].url)
-                                j++
+                                p.push(self.uploadFileImg(self.tempGal[i][k].file))
                             } else {
                                 dataI.img.push(self.tempGal[i][k].url)
                             }
                             dataI.type.push(self.tempGal[i][k].type)
                         }
-                        self.tempGal[i].splice(0, 9999999999)
-                        self.EDIT_SECTION(dataI).then((res) => {
-                            if (res.response !== '') {
-                                for (let j = 0; j < self.info.galerijas.text[data.idB].images.length; j++) {
-                                    data.images.push(self.info.galerijas.text[data.idB].images[j])
+                        console.log(dataI)
+                        Promise.all(p).then((val) => {
+                            let j = 0
+                            for (let k = 0; k < self.tempGal[i].length; k++) {
+                                if (self.tempGal[i][k].type === 'image') {
+                                    if (val[j].error === '') dataI.img.push(val[j].url)
+                                    j++
                                 }
-                                for (let j = 0; j < dataI.img.length; j++) {
-                                    data.images.push({
-                                        corr_id: dataI.corr_id,
-                                        type: dataI.type[i],
-                                        url: dataI.img[i],
-                                        id: res.response[i]
-                                    })
-                                }
-                                self.UPDATE_DATA(data)
-                                self.galNew = false
-                                self.inprocess.video = false
                             }
+                            self.tempGal[i].splice(0, 9999999999)
+                            self.EDIT_SECTION(dataI).then((res) => {
+                                if (res.response !== '') {
+                                    for (let j = 0; j < self.info.galerijas.text[data.idB].images.length; j++) {
+                                        data.images.push(self.info.galerijas.text[data.idB].images[j])
+                                    }
+                                    for (let j = 0; j < dataI.img.length; j++) {
+                                        data.images.push({
+                                            corr_id: dataI.corr_id,
+                                            type: dataI.type[i],
+                                            url: dataI.img[i],
+                                            id: res.response[i]
+                                        })
+                                    }
+                                    self.UPDATE_DATA(data)
+                                    self.galNew = false
+                                    self.inprocess.video = false
+                                }
+                            })
                         })
                     })
                 })
