@@ -126,6 +126,9 @@ const store = new Vuex.Store({
                     Vue.set(state.data, key, data[key])
                 }
             }
+            state.data.fizioterapija.text.reverse()
+            state.data.vingrosana.text.reverse()
+            state.data.galerijas.text.reverse()
         },
         ADD_FIZIO: (state, data) => {
           let length = state.data.fizioterapija.text.length

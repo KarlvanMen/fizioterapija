@@ -44,7 +44,7 @@ export default {
             if (typeof self.getPhotoData.pageInfo !== 'undefined') {
                 let data = self.getPhotoData
                 self.pageInfo = data.pageInfo[0]
-                self.text = data.text.reverse()
+                self.text = data.text
                 clearInterval(interval)
             }
         }, 100)

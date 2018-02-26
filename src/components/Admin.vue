@@ -771,9 +771,6 @@ export default {
                     let data = self.getAllData
                     // self.pageInfo = data.pageInfo[0]
                     self.info = data
-                    self.info.fizioterapija.text = self.info.fizioterapija.text.reverse()
-                    self.info.vingrosana.text = self.info.vingrosana.text.reverse()
-                    self.info.galerijas.text = self.info.galerijas.text.reverse()
                     self.prepareDates()
                     clearInterval(interval)
                 }
@@ -1181,7 +1178,6 @@ export default {
                         images: [],
                         image: url.error === '' ? url.url : self.info.galerijas.text[i].image
                     }
-                    console.log(data)
                     self.EDIT_SECTION(data).then((res) => {
                         let dataI = {
                             corr_id: data.id,
@@ -1189,10 +1185,8 @@ export default {
                             type: [],
                             nav_url: 'galImg'
                         }
-                        console.log(dataI)
                         let p = []
                         for (let k = 0; k < self.tempGal[i].length; k++) {
-                            console.log(self.tempGal[i][k])
                             if (self.tempGal[i][k].type === 'image') {
                                 p.push(self.uploadFileImg(self.tempGal[i][k].file))
                             } else {
@@ -1200,7 +1194,6 @@ export default {
                             }
                             dataI.type.push(self.tempGal[i][k].type)
                         }
-                        console.log(dataI)
                         Promise.all(p).then((val) => {
                             let j = 0
                             for (let k = 0; k < self.tempGal[i].length; k++) {
