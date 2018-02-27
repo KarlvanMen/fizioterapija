@@ -62,9 +62,11 @@
                                         b B
                                     p.italic(@click="doCommand('italic', $event)" @mousedown="$event.preventDefault()")
                                         i I
-                                p.desc(contenteditable="true" :id="'fizio-desc-' + index" v-on:keyup="fizio2columnChange($event)" v-html="section.textTitle")
+                                    p.underline(@click="doCommand('underline', $event)" @mousedown="$event.preventDefault()")
+                                        u U
+                                p.desc(contenteditable="true" :id="'fizio-desc-' + index" v-on:keyup="fizio2columnChange($event)")
                                 input.pricingInp(type="text" v-model="section.textPrice")
-                                p.pricing(contenteditable="true" v-on:keyup="fizioPricingChange($event)" v-html="section.textPrice")
+                                p.pricing(contenteditable="true" v-on:keyup="fizioPricingChange($event)")
                             button(type="submit") Saglabāt
                             .cancel(@click="closeFizio($event, index, 0)") Atcelt
                             .delete(@click="deleteFizio($event, index, 0)") Dzēst
@@ -102,9 +104,16 @@
                             .text
                                 textarea.h4(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea" v-bind:value="section.textTitle")
                                 input.twoColumns(type="text" v-model="section.textText")
-                                p.desc(contenteditable="true" v-on:keyup="fizio2columnChange($event)")   {{section.textText}}
+                                .buttons
+                                    p.bold(@click="doCommand('bold', $event)" @mousedown="$event.preventDefault()")
+                                        b B
+                                    p.italic(@click="doCommand('italic', $event)" @mousedown="$event.preventDefault()")
+                                        i I
+                                    p.underline(@click="doCommand('underline', $event)" @mousedown="$event.preventDefault()")
+                                        u U
+                                p.desc(contenteditable="true" v-on:keyup="fizio2columnChange($event)")
                                 input.pricingInp(type="text" v-model="section.textPrice")
-                                p.pricing(contenteditable="true" v-on:keyup="fizioPricingChange($event)")   {{section.textPrice}}
+                                p.pricing(contenteditable="true" v-on:keyup="fizioPricingChange($event)")
                             button(type="submit") Saglabāt
                             .cancel(@click="closeFizio($event, index, 1)") Atcelt
                             .delete(@click="deleteVingr($event, index, 1)") Dzēst
@@ -116,7 +125,7 @@
                     .edit.new(@click="kalNew = true" v-if="!kalNew") Pievienot jaunu nodarbību
                     .newObj.training-container.open(v-if="kalNew")
                         form(v-on:submit.prevent="createKal($event)" autocomplete="nope")
-                            textarea(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea") Nosaukums
+                            textarea(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea" placeholder="Nosaukums")
                             .time
                                 p.date(@click="triggerKal($event)") {{kalDate.getDate() + '/' + (kalDate.getMonth() + 1) + '/' + kalDate.getFullYear()}}
                                 .container
@@ -161,7 +170,7 @@
                             .delete(@click="deleteKal($event, index)") Dzēst
             .page.kontakti
                 h3 Kontakti
-                .edit(@click="edit.kont = true" v-if="!edit.kont") Labot
+                .edit(@click="openKontakti()" v-if="!edit.kont") Labot
                 .editable(v-if="edit.kont" :class="{inprocess: inprocess.kont}")
                     .cancel.stick(@click = "edit.kont = false") Aizvērt
                     form(v-on:submit.prevent="saveKontakti($event)")
@@ -175,11 +184,14 @@
                             label Vietas nosaukums
                                 input(type="text" v-bind:value="add.street")
                             label Pilna adrese
-                                input(type="text" v-bind:value="add.streetFull")
+                                input.contEdit(type="text" @change="adressChange($event, index)" v-bind:value="add.streetFull")
                             label.lat Lat
                                 input(type="text" v-bind:value="add.lat")
                             label.long Long
                                 input(type="text" v-bind:value="add.lng")
+                            label Papildus informācija
+                                input(type="text" v-bind:value="add.additional")
+                            Gmap.Gmap(:markerCoordinates="tempAddr[index]" :mapName="'gmap-' + index")
                             .delete(@click="deleteAddress($event, index)") Dzēst
                         .bttns
                             input.save(type="submit" value="Saglabāt")
@@ -190,11 +202,14 @@
                             label Vietas nosaukums
                                 input(type="text")
                             label Pilna adrese
-                                input(type="text")
+                                input(type="text" @change="adressChange($event, 9999999)")
                             label.lat Latitude
                                 input(type="text")
                             label.long Longitude
                                 input(type="text")
+                            label Papildus informācija
+                                input(type="text")
+                            Gmap.Gmap(:markerCoordinates="tempNewAddt" :mapName="'gmap-new'")
                             .bttns
                                 input.save(type="submit" value="Pievienot adresi")
                                 .cancel(@click="kontNew = false") Atcelt
@@ -327,6 +342,8 @@
 import Datepicker from 'vuejs-datepicker'
 import { mapActions, mapGetters } from 'vuex'
 import docCookies from '../store/cookies.js'
+import Gmap from './Gmap.vue'
+import axios from 'axios'
 
 export default {
     name: 'Admin',
@@ -407,7 +424,14 @@ export default {
                     'icon': 'underline',
                     'desc': 'Toggles underline on/off for the selection or at the insertion point.'
                 },
-            }
+            },
+            tempAddr: [],
+            tempNewAddt: [
+                {
+                    lat: 0,
+                    lng: 0
+                }
+            ],
         }
     },
     methods: {
@@ -443,17 +467,17 @@ export default {
             case 0:
                 el.target.parentElement.querySelector('.title').value = this.info.fizioterapija.text[i].title
                 el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.h4').value = this.info.fizioterapija.text[i].textTitle
-                el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.desc').textContent = this.info.fizioterapija.text[i].textText
+                el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.desc').innerHTML = this.info.fizioterapija.text[i].textText
                 el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.twoColumns').value = this.info.fizioterapija.text[i].textText
-                el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.pricing').textContent = this.info.fizioterapija.text[i].textPrice
+                el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.pricing').innerHTML = this.info.fizioterapija.text[i].textPrice
                 el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.pricingInp').value = this.info.fizioterapija.text[i].textPrice
                 break
             case 1:
                 el.target.parentElement.querySelector('.title').value = this.info.vingrosana.text[i].title
                 el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.h4').value = this.info.vingrosana.text[i].textTitle
-                el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.desc').textContent = this.info.vingrosana.text[i].textText
+                el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.desc').innerHTML = this.info.vingrosana.text[i].textText
                 el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.twoColumns').value = this.info.vingrosana.text[i].textText
-                el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.pricing').textContent = this.info.vingrosana.text[i].textPrice
+                el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.pricing').innerHTML = this.info.vingrosana.text[i].textPrice
                 el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.pricingInp').value = this.info.vingrosana.text[i].textPrice
                 break
             case 2:
@@ -492,11 +516,21 @@ export default {
             while (!target.classList.contains('text')) {
                 target = target.parentElement
             }
-            console.log(target.querySelector('.desc').innerText)
-            target.querySelector('.twoColumns').value = target.querySelector('.desc').innerText
+            target.querySelector('.twoColumns').value = target.querySelector('.desc').innerHTML
         },
         fizioPricingChange (el) {
-            el.target.parentElement.querySelector('.pricingInp').value = el.target.textContent
+            let target = el.target
+            while (!target.classList.contains('text')) {
+                target = target.parentElement
+            }
+            target.querySelector('.pricingInp').value = target.querySelector('.pricing').innerHTML
+        },
+        kontaktiAdressChange (el) {
+            let target = el.target
+            while (!target.classList.contains('address')) {
+                target = target.parentElement
+            }
+            target.querySelector('.contEdit').value = el.target.innerHTML
         },
         deleteFizio (el, i, j) {
             this.closeFizio(el, i, j)
@@ -659,15 +693,15 @@ export default {
             let aData = []
             for (let i = 0; i < addresses; i++) {
                 aData.push({
-                    lat: e.target[6 + 5 * i].value,
-                    lng: e.target[7 + 5 * i].value,
-                    street: e.target[4 + 5 * i].value,
-                    streetFull: e.target[5 + 5 * i].value,
+                    lat: e.target[6 + 6 * i].value,
+                    lng: e.target[7 + 6 * i].value,
+                    street: e.target[4 + 6 * i].value,
+                    streetFull: e.target[5 + 6 * i].value,
+                    additional: e.target[8 + 6 * i].value,
                     nav_url: 'updateAdd',
                     id: this.info.kontakti.text[i].id
                 })
             }
-
             this.inprocess.kont = true
             let self = this
 
@@ -856,10 +890,11 @@ export default {
         },
         newAddress (e) {
             let data = {
-                lat: e.target[1].value,
-                lng: e.target[2].value,
-                street: e.target[3].value,
-                streetFull: e.target[4].value,
+                lat: e.target[3].value,
+                lng: e.target[4].value,
+                street: e.target[1].value,
+                streetFull: e.target[2].value,
+                additional: e.target[5].value,
                 nav_url: 'createAdd',
             }
             this.inprocess.kont = true
@@ -867,9 +902,48 @@ export default {
             self.EDIT_SECTION(data).then((res) => {
                 if (res.response) {
                     data.id = res.response
+
+                    self.tempAddr.push([{
+                        lat: data.lat,
+                        lng: data.lng
+                    }])
                     self.CREATE_DATA(data)
                     self.kontNew = false
                     self.inprocess.kont = false
+                    console.log(self.tempAddr)
+                }
+            })
+        },
+        adressChange (e, i) {
+            let data = new Promise((resolve, reject) => {
+                axios({
+                    method: 'post',
+                    url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + e.target.value + '&key=AIzaSyA4ADLbwhDEbOpNpixZrpUi4D_edka4R4A',
+                }).then((res) => {
+                    resolve(res.data)
+                })
+                .catch((err) => {
+                    console.log('rejected')
+                    reject(err)
+                })
+            })
+            let self = this
+            data.then((res) => {
+                if (res.status === 'OK' && i < 99999) {
+                    self.tempAddr[i][0].lat = res.results[0].geometry.location.lat
+                    self.tempAddr[i][0].lng = res.results[0].geometry.location.lng
+                    self.info.kontakti.text[i].lat = self.tempAddr[i][0].lat
+                    self.info.kontakti.text[i].lng = self.tempAddr[i][0].lng
+                    self.info.kontakti.text[i].streetFull = e.target.value
+                } else if (res.status === 'OK') {
+                    self.tempNewAddt = [
+                        {
+                            lat: res.results[0].geometry.location.lat,
+                            lng: res.results[0].geometry.location.lng
+                        }
+                    ]
+                    e.target.parentElement.parentElement.querySelector('.lat').querySelector('input').value = res.results[0].geometry.location.lat
+                    e.target.parentElement.parentElement.querySelector('.long').querySelector('input').value = res.results[0].geometry.location.lng
                 }
             })
         },
@@ -1269,7 +1343,17 @@ export default {
             let val = (typeof cmd.val !== 'undefined') ? prompt('Value for ' + cmd.cmd + '?', cmd.val) : ''
             document.execCommand(cmd.cmd, false, (val || ''))
             this.fizio2columnChange(e)
+            this.fizioPricingChange(e)
         },
+        openKontakti () {
+            for (let i = 0; i < this.info.kontakti.text.length; i++) {
+                this.tempAddr.push([{
+                    lat: this.info.kontakti.text[i].lat,
+                    lng: this.info.kontakti.text[i].lng
+                }])
+            }
+            this.edit.kont = true
+        }
     },
     computed: {
         ...mapGetters([
@@ -1281,6 +1365,7 @@ export default {
         this.getData()
     },
     components: {
+        Gmap,
         Datepicker
     },
     created () {
@@ -1291,22 +1376,6 @@ export default {
             this.LOGIN(data)
         }
     },
-    filters: {
-        getText: (str) => {
-            // this prevents any overhead from creating the object each time
-            let element = document.createElement('div')
-            if (str && typeof str === 'string') {
-                str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '')
-                str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '')
-                element.innerHTML = str
-                str = element.textContent
-                element.textContent = ''
-            }
-
-            return str
-        }
-
-    }
 }
 </script>
 
@@ -1513,15 +1582,19 @@ export default {
                         display none
                     .buttons
                         display flex
-                        width   66%
+                        width   100%
+                        justify-content center
+                        border-bottom   1px solid #525252
+                        margin-bottom   -0.3em
                         p
                             border  none
-                            margin  1em 0 -1em
+                            margin  1em 0.2em 0.2em
                             padding 0 0.5em
                             z-index 100
                             cursor  pointer
                             width   0.7em
                             text-align center
+                            border      1px solid #525252
                             &:hover
                                 background  #ccc
                 .cancel,
@@ -1661,12 +1734,26 @@ export default {
                 border-color    #169cdd
     .kontakti
         .editable
+            .bttns
+                display block
             form
                 padding-top 2em
+            .Gmap
+                height  300px
         .address
             border      1px solid #b0b0b0
             padding     1em
             margin-top  1em
+            .likeInp
+                padding 0.5em 0.25em
+                box-sizing  border-box
+                margin-bottom   0.5em
+                border          1px solid #777
+                color           #111
+                margin-top      0
+            .lat,
+            .long
+                display none
             &.new
                 margin  1em 0
                 .bttns

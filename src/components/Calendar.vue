@@ -309,10 +309,12 @@ export default {
                         week.classList.remove('current')
                     }
                 }
+                let done = false
                 for (let i = 0; i < months.length; i++) {
                     let month = months[i]
-                    if (month.querySelector('.current') !== null) {
+                    if (month.querySelector('.current') !== null && !done) {
                         month.classList.add('open')
+                        done = true
                     } else {
                         month.classList.remove('open')
                     }
@@ -615,7 +617,7 @@ export default {
                             text-align      center
                             text-transform  uppercase
                             position        relative
-                            font-size       0.8em
+                            font-size       0.7em
                             &:first-child
                                 &:before 
                                     content     ''
@@ -681,6 +683,7 @@ export default {
                                         padding         5px 2px
                                         flex            1 1 auto
                                         margin-right    0
+                                        font-size       0.85em
                                     .time
                                         flex            1 1 auto
                                         background      #169cdd
@@ -711,17 +714,15 @@ export default {
                                     opacity 0
                                 .trainings
                                     display none
-    @media screen and (min-width: 1298px)
+    @media screen and (min-width: 1280px)
         .header
             .title 
                 width           100%      
                 max-width       1080px
                 margin          0 auto 
                 padding-left    0
-    @media screen and (min-width: 1400px)
-        .header
             .big-container
                 width           100%
-                max-width       960px
+                max-width       800px
                 margin          0 auto
 </style>

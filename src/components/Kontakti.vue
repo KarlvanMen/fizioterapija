@@ -8,7 +8,7 @@
                 router-link(:to="{ path: pageInfo.pageLinkURL}")
                     h4 {{pageInfo.pageTitle}}
         .container
-            Gmap(:markerCoordinates="text")
+            Gmap(:markerCoordinates="text" :mapName="'gmap'")
             .information
                 .question
                     form
@@ -21,7 +21,7 @@
                 .addresses
                     p
                         b {{pageInfo.siaTitle}}
-                    p(v-for="address in text" v-html="address.streetFull")
+                    p(v-for="address in text" v-html="address.streetFull + '<br>' + (address.additional !== null ? address.additional : '')")
                     p
                         b {{email}}
                     p(v-html="pageInfo.siaEmail")

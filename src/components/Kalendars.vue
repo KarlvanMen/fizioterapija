@@ -97,17 +97,20 @@ export default {
                 border-bottom   250px solid #169CDD
                 border-right    250px solid transparent
                 opacity         0.12
-    @media screen and (min-width: 1450px)
         .info
             position    absolute
-            width       208px
+            width       175px
             bottom      0
-            left        50%
-            margin-left -725px
+            left        1em
             top         auto
             font-size   0.8em
             padding     0
             z-index     -1
             p
                 margin  0
+    @media screen and (min-width: 1450px)
+        .info
+            left        50%
+            margin-left -725px
+            width       208px
 </style>
