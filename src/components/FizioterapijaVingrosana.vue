@@ -9,13 +9,13 @@
                     h4 {{pageInfo.pageLinkTitle}}
         ul.section-container
             div(v-for="section, index in text")
-                li.section(@click="toggleSection(index)" :class="'section-' + (index%3 + 1)")
+                li.section(:class="'section-' + (index%3 + 1)")
                     .background(v-bind:style="{'background-image': 'url('+section.image+')'}")
-                    h2  {{section.title}}
+                    h2(@click="toggleSection(index)")  {{section.title}}
                     .text
                         h3  {{section.textTitle}}
-                        p.desc   {{section.textText}}
-                        p.pricing   {{section.textPrice}}
+                        p.desc(v-html="section.textText")
+                        p.pricing(v-html="section.textPrice")
             div(v-for="extra in extraEl")
                 li.section.extra
                     .background(v-bind:style="{'background-image': 'url('+extraImg[extra-1]+')'}")
@@ -274,9 +274,9 @@ export default {
                     list-style      none
                     height          0
                     z-index         1000
-                    cursor          pointer
                     width           100%
                     padding-bottom  56.25%
+                    cursor          default
                     &:hover,
                     &.open
                         .background
@@ -309,6 +309,7 @@ export default {
                         box-sizing          border-box
                         align-items         center
                         justify-content     center
+                        cursor              pointer
                         &:before
                             display none                
                     &.open

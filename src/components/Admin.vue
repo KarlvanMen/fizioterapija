@@ -10,6 +10,7 @@
                 h3 Sākumlapa
                 .edit(@click="edit.home = true" v-if="!edit.home") Labot
                 .editable(v-if="edit.home" :class="{inprocess: inprocess.home}")
+                    .cancel.stick(@click = "edit.home = false") Aizvērt
                     form(v-on:submit.prevent="saveHome")
                         .quote
                         textarea#homeQuote(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea" v-bind:value="info.home.pageInfo[0].quote")
@@ -56,9 +57,14 @@
                             .text
                                 textarea.h4(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea" v-bind:value="section.textTitle")
                                 input.twoColumns(type="text" v-model="section.textText")
-                                p.desc(contenteditable="true" v-on:keyup="fizio2columnChange($event)")   {{section.textText}}
+                                .buttons
+                                    p.bold(@click="doCommand('bold', $event)" @mousedown="$event.preventDefault()")
+                                        b B
+                                    p.italic(@click="doCommand('italic', $event)" @mousedown="$event.preventDefault()")
+                                        i I
+                                p.desc(contenteditable="true" :id="'fizio-desc-' + index" v-on:keyup="fizio2columnChange($event)" v-html="section.textTitle")
                                 input.pricingInp(type="text" v-model="section.textPrice")
-                                p.pricing(contenteditable="true" v-on:keyup="fizioPricingChange($event)")   {{section.textPrice}}
+                                p.pricing(contenteditable="true" v-on:keyup="fizioPricingChange($event)" v-html="section.textPrice")
                             button(type="submit") Saglabāt
                             .cancel(@click="closeFizio($event, index, 0)") Atcelt
                             .delete(@click="deleteFizio($event, index, 0)") Dzēst
@@ -385,6 +391,23 @@ export default {
             ],
             trDates: [],
             tempGal: [],
+            commands: {
+                bold: {
+                    'cmd': 'bold',
+                    'icon': 'bold',
+                    'desc': 'Toggles bold on/off for the selection or at the insertion point. (Internet Explorer uses the STRONG tag instead of B.)'
+                },
+                italic: {
+                    'cmd': 'italic',
+                    'icon': 'italic',
+                    'desc': 'Toggles italics on/off for the selection or at the insertion point. (Internet Explorer uses the EM tag instead of I.)'
+                },
+                underline: {
+                    'cmd': 'underline',
+                    'icon': 'underline',
+                    'desc': 'Toggles underline on/off for the selection or at the insertion point.'
+                },
+            }
         }
     },
     methods: {
@@ -465,7 +488,12 @@ export default {
             el.target.parentElement.parentElement.classList.toggle('open')
         },
         fizio2columnChange (el) {
-            el.target.parentElement.querySelector('.twoColumns').value = el.target.textContent
+            let target = el.target
+            while (!target.classList.contains('text')) {
+                target = target.parentElement
+            }
+            console.log(target.querySelector('.desc').innerText)
+            target.querySelector('.twoColumns').value = target.querySelector('.desc').innerText
         },
         fizioPricingChange (el) {
             el.target.parentElement.querySelector('.pricingInp').value = el.target.textContent
@@ -528,6 +556,8 @@ export default {
                     nav_url: j === 0 ? 'updateFiz' : 'updateVin'
                 }
                 self.EDIT_SECTION(data).then((res) => {
+                    el.target.parentElement.classList.remove('open')
+                    self.closeFizio(el, i, j)
                     self.UPDATE_DATA(data)
                     self.galNew = false
                     self.inprocess.video = false
@@ -1233,7 +1263,13 @@ export default {
                 check: false
             }
             this.LOGIN(data)
-        }
+        },
+        doCommand (cmdKey, e) {
+            let cmd = this.commands[cmdKey]
+            let val = (typeof cmd.val !== 'undefined') ? prompt('Value for ' + cmd.cmd + '?', cmd.val) : ''
+            document.execCommand(cmd.cmd, false, (val || ''))
+            this.fizio2columnChange(e)
+        },
     },
     computed: {
         ...mapGetters([
@@ -1254,6 +1290,22 @@ export default {
             }
             this.LOGIN(data)
         }
+    },
+    filters: {
+        getText: (str) => {
+            // this prevents any overhead from creating the object each time
+            let element = document.createElement('div')
+            if (str && typeof str === 'string') {
+                str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '')
+                str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '')
+                element.innerHTML = str
+                str = element.textContent
+                element.textContent = ''
+            }
+
+            return str
+        }
+
     }
 }
 </script>
@@ -1459,6 +1511,19 @@ export default {
                         border  1px solid #525252
                     input
                         display none
+                    .buttons
+                        display flex
+                        width   66%
+                        p
+                            border  none
+                            margin  1em 0 -1em
+                            padding 0 0.5em
+                            z-index 100
+                            cursor  pointer
+                            width   0.7em
+                            text-align center
+                            &:hover
+                                background  #ccc
                 .cancel,
                 .delete,
                 button

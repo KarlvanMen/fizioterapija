@@ -193,12 +193,12 @@ const store = new Vuex.Store({
             Vue.set(state.data.galerijas.text, data.idB, data)
             break
             case 'updateFiz':
-            if (state.data.fizioterapija.text.hasOwnProperty(data.idB)) {
+            if (state.data.fizioterapija.text.hasOwnProperty(data.idD)) {
               Vue.set(state.data.fizioterapija.text, data.idB, data)
             }
             break
             case 'updateVin':
-            if (state.data.vingrosana.text.hasOwnProperty(data.idB)) {
+            if (state.data.vingrosana.text.hasOwnProperty(data.idD)) {
               Vue.set(state.data.vingrosana.text, data.idB, data)
             }
             break
