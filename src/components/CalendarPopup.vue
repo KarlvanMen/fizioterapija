@@ -7,7 +7,7 @@
                     p {{tr.day}}.{{tr.month}}.{{tr.year}} {{tr.time}}
                     .delete(@click="tr.active = false")
                 p {{tr.title}}
-        form(v-on:submit.prevent="submitTr()")
+        form(v-on:submit.prevent="submitTr($event)")
             .input-holder
                 input(type="text" placeholder="VĀRDS UZVĀRDS" v-model="name")
                 span.white
@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 
 export default {
     name: 'Kalendars',
@@ -58,13 +59,25 @@ export default {
         },
     },
     methods: {
-        submitTr () {
-            console.log(this.name)
-            console.log(this.phone)
-            console.log(this.email)
-            console.log(this.insurance)
-            console.log(this.persID)
-            this.$emit('close')
+        ...mapActions(['EDIT_SECTION']),
+        submitTr (e) {
+            let data = {
+                name: this.name,
+                phone: this.phone,
+                email: this.email,
+                insurance: this.insurance,
+                personaId: this.persID,
+                nav_url: 'send_tr'
+            }
+            if (this.name === '') e.target[0].classList.add('red')
+            if (this.phone === '') e.target[1].classList.add('red')
+            if (this.email === '') e.target[2].classList.add('red')
+            if (!(this.name === '' || this.phone === '' || this.email === '')) {
+                let self = this
+                this.EDIT_SECTION(data).then((res) => {
+                    self.minimize = true
+                })
+            }
         },
     },
     mounted () {
@@ -175,6 +188,8 @@ export default {
                     padding         1em 0
                     z-index         1000
                     outline         none
+                    &.red
+                        border-left 1px solid rgba(255,0,0, 0.8)
             .insurance
                 margin  1em 0
                 input

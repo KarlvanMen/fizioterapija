@@ -11,7 +11,7 @@
             Gmap(:markerCoordinates="text" :mapName="'gmap'")
             .information
                 .question
-                    form
+                    form(v-on:submit.prevent="submitQ($event)")
                         .background
                         input(type="text" v-bind:placeholder="name")
                         input(type="tel" v-bind:placeholder="phone")
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import Gmap from './Gmap.vue'
 
 export default {
@@ -47,6 +47,30 @@ export default {
             text: [],
             pageInfo: {}
         }
+    },
+    methods: {
+        ...mapActions(['EDIT_SECTION']),
+        submitQ (e) {
+            let data = {
+                name: e.target[0].value,
+                phone: e.target[1].value,
+                email: e.target[2].value,
+                question: e.target[3].value,
+                nav_url: 'send_qt'
+            }
+            if (data.name === '') e.target[0].classList.add('red')
+            if (data.phone === '') e.target[1].classList.add('red')
+            if (data.email === '') e.target[2].classList.add('red')
+            if (data.question === '') e.target[3].classList.add('red')
+            if (!(data.name === '' || data.phone === '' || data.email === '' || data.question === '')) {
+                this.EDIT_SECTION(data).then((res) => {
+                    e.target[0].value = ''
+                    e.target[1].value = ''
+                    e.target[2].value = ''
+                    e.target[3].value = ''
+                })
+            }
+        },
     },
     components: {
         Gmap,
@@ -101,6 +125,8 @@ export default {
                 padding         1em 0 0.5em 0
                 position        relative
                 outline         none
+                &.red
+                    border-left 1px solid red
             input[type="submit"]
                 border          none
                 border          1px solid #3cace2

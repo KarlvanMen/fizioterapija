@@ -276,8 +276,8 @@ export default {
                     let marker = new google.maps.Marker({
                         position,
                         map: gMap,
-                        // icon: '../assets/gmarker.svg',
-                        icon: 'https://maps.google.com/mapfiles/kml/shapes/parking_lot_maps.png'
+                        icon: '../assets/gmarker.svg',
+                        // icon: 'https://maps.google.com/mapfiles/kml/shapes/parking_lot_maps.png'
                     })
                     let infowindow = new google.maps.InfoWindow({
                         content: '<b>ADRESE</b><br>' + coord.street
