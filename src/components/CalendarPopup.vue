@@ -69,15 +69,16 @@ export default {
                 personaId: this.persID,
                 nav_url: 'send_tr'
             }
-            if (this.name === '') e.target[0].classList.add('red')
-            if (this.phone === '') e.target[1].classList.add('red')
-            if (this.email === '') e.target[2].classList.add('red')
-            if (!(this.name === '' || this.phone === '' || this.email === '')) {
-                let self = this
-                this.EDIT_SECTION(data).then((res) => {
-                    self.minimize = true
-                })
-            }
+            console.log(data)
+            // if (this.name === '') e.target[0].classList.add('red')
+            // if (this.phone === '') e.target[1].classList.add('red')
+            // if (this.email === '') e.target[2].classList.add('red')
+            // if (!(this.name === '' || this.phone === '' || this.email === '')) {
+            //     let self = this
+            //     this.EDIT_SECTION(data).then((res) => {
+            //         self.minimize = true
+            //     })
+            // }
         },
     },
     mounted () {

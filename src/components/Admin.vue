@@ -1771,6 +1771,8 @@ export default {
                         text-align center
     .about
         .editable
+            .bttns
+                display block
             .fizioObj
                 .text
                     .desc
