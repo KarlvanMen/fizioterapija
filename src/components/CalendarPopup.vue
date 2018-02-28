@@ -67,18 +67,26 @@ export default {
                 email: this.email,
                 insurance: this.insurance,
                 personaId: this.persID,
-                nav_url: 'send_tr'
+                nav_url: 'send_tr',
+                trainings: []
             }
-            console.log(data)
-            // if (this.name === '') e.target[0].classList.add('red')
-            // if (this.phone === '') e.target[1].classList.add('red')
-            // if (this.email === '') e.target[2].classList.add('red')
-            // if (!(this.name === '' || this.phone === '' || this.email === '')) {
-            //     let self = this
-            //     this.EDIT_SECTION(data).then((res) => {
-            //         self.minimize = true
-            //     })
-            // }
+            for (let i = 0; i < this.trainings.length; i++) {
+                if (this.trainings[i].active === true) {
+                    data.trainings.push({
+                        Nosaukums: this.trainings[i].title,
+                        Laiks: this.trainings[i].day + '.' + this.trainings[i].month + '.' + this.trainings[i].year + ' ' + this.trainings[i].time,
+                    })
+                }
+            }
+            if (this.name === '') e.target[0].classList.add('red')
+            if (this.phone === '') e.target[1].classList.add('red')
+            if (this.email === '') e.target[2].classList.add('red')
+            if (!(this.name === '' || this.phone === '' || this.email === '')) {
+                let self = this
+                this.EDIT_SECTION(data).then((res) => {
+                    self.minimize = true
+                })
+            }
         },
     },
     mounted () {

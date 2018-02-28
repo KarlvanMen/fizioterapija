@@ -202,6 +202,11 @@ const store = new Vuex.Store({
               Vue.set(state.data.vingrosana.text, data.idD, data)
             }
             break
+            case 'parmums':
+            if (state.data.parmums.pageInfo.hasOwnProperty(data.idD)) {
+              Vue.set(state.data.parmums.pageInfo[data.idD], 'quote', data.quote)
+            }
+            break
           }
         },
         LOGIN: (state) => {

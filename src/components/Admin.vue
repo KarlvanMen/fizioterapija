@@ -234,7 +234,15 @@
                                     input#newAbouttitleImg(type="file" accept="image/*" ref="profileImg" @change="replaceBackground($event)")
                                     label.plus(for="newAbouttitleImg") Mainīt bildi
                             .text
-                                textarea.desc(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea") Apraksts
+                                .buttons
+                                    p.bold(@click="doCommand('bold', $event)" @mousedown="$event.preventDefault()")
+                                        b B
+                                    p.italic(@click="doCommand('italic', $event)" @mousedown="$event.preventDefault()")
+                                        i I
+                                    p.underline(@click="doCommand('underline', $event)" @mousedown="$event.preventDefault()")
+                                        u U
+                                input.pricingInp
+                                p.pricing(contenteditable="true" v-on:keyup="fizioPricingChange($event)")
                             button(type="submit") Saglabāt
                             .cancel(@click="aboutNew = false") Atcelt
                     .fizioObj.about-container(v-for="section, index in info.parmums.text")
@@ -247,7 +255,15 @@
                                     input(v-bind:id="'titleImg-' + index" type="file" accept="image/*" ref="profileImg" @change="replaceBackground($event,index)")
                                     label.plus(v-bind:for="'titleImg-' + index") Mainīt bildi
                             .text
-                                textarea.desc(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea" v-bind:value="section.text")
+                                .buttons
+                                    p.bold(@click="doCommand('bold', $event)" @mousedown="$event.preventDefault()")
+                                        b B
+                                    p.italic(@click="doCommand('italic', $event)" @mousedown="$event.preventDefault()")
+                                        i I
+                                    p.underline(@click="doCommand('underline', $event)" @mousedown="$event.preventDefault()")
+                                        u U
+                                input.pricingInp(v-bind:value="section.text")
+                                p.pricing(contenteditable="true" v-on:keyup="fizioPricingChange($event)")
                             button(type="submit") Saglabāt
                             .cancel(@click="closeFizio($event, index, 2)") Atcelt
                             .delete(@click="deleteAbout($event, index)") Dzēst
@@ -482,7 +498,7 @@ export default {
                 break
             case 2:
                 el.target.parentElement.querySelector('.title').value = this.info.parmums.text[i].title
-                el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.desc').value = this.info.parmums.text[i].text
+                el.target.parentElement.parentElement.parentElement.querySelector('.text').querySelector('.pricing').innerHTML = this.info.parmums.text[i].text
                 break
             case 3:
                 el.target.parentElement.querySelector('.title').value = this.info.galerijas.text[i].title
@@ -516,7 +532,9 @@ export default {
             while (!target.classList.contains('text')) {
                 target = target.parentElement
             }
-            target.querySelector('.twoColumns').value = target.querySelector('.desc').innerHTML
+            if (target.querySelectorAll('.desc').length) {
+                target.querySelector('.twoColumns').value = target.querySelector('.desc').innerHTML
+            }
         },
         fizioPricingChange (el) {
             let target = el.target
@@ -685,8 +703,8 @@ export default {
         saveKontakti (e) {
             let data = {
                 siaTitle: e.target[0].value,
-                siaPhone: e.target[1].value,
-                siaEmail: e.target[2].value,
+                siaPhone: e.target[2].value,
+                siaEmail: e.target[1].value,
                 nav_url: 'updateKont',
             }
             let addresses = e.target.querySelectorAll('fieldset').length
@@ -732,14 +750,13 @@ export default {
         },
         saveAbout (el) {
             let data = {
-                value: el.target[1].value,
+                value: el.target[0].value,
             }
             this.inprocess.about = true
             let self = this
             self.ADJUST_PARMUMS(data).then((res) => {
                 if (res.response) {
                     self.info.parmums.pageInfo[0].quote = data.value
-                    self.edit.about = false
                     self.inprocess.about = false
                 }
             })
@@ -910,7 +927,6 @@ export default {
                     self.CREATE_DATA(data)
                     self.kontNew = false
                     self.inprocess.kont = false
-                    console.log(self.tempAddr)
                 }
             })
         },
@@ -1778,6 +1794,10 @@ export default {
                     .desc
                         max-width   none
                         width       100%
+                &.open
+                    .text
+                        .pricing
+                            width   100%
         .about-container
             margin-top  1em
     .galleries

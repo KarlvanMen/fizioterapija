@@ -15,7 +15,7 @@
             .background(:style="backgroundImage(section.image)")
             .text
                 h2 {{section.title}}
-                p {{section.text}}
+                p(v-html="section.text")
 </template>
 
 <script>
