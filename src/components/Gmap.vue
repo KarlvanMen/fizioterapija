@@ -29,7 +29,7 @@ export default {
             let options = {            
                 zoom: 15,
                 center: mapCentre,
-                scrollwheel: false,
+                scrollwheel: true,
                 styles: [
                     {
                         "featureType": "administrative",
@@ -276,14 +276,27 @@ export default {
                     let marker = new google.maps.Marker({
                         position,
                         map: gMap,
-                        icon: '../assets/gmarker.svg',
-                        // icon: 'https://maps.google.com/mapfiles/kml/shapes/parking_lot_maps.png'
+                        // icon: '../assets/gmarker.svg',
+                        icon: 'https://dl.dropboxusercontent.com/s/ggl34b80akir69a/gmarker.svg?dl=0',                        
                     })
                     let infowindow = new google.maps.InfoWindow({
-                        content: '<b>ADRESE</b><br>' + coord.street
+                        content: '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; width: 120px;" id="hook-' + self.mapName + '"><b>ADRESE</b><br>' + coord.street + '</div>'
                     })
                     marker.addListener('click', function() {
-                        infowindow.open(map, marker)
+                        infowindow.open(gMap, marker)
+                        let parent = self.$el.querySelector('#hook-' + self.mapName).parentElement.parentElement.parentElement.parentElement
+                        let ch = parent.children
+                        for(let i = 0; i < ch.length; i++) {
+                            ch[i].style.display = "none"
+                        }
+                        let div = document.createElement('div')
+                        div.id = 'marker-' + self.mapName
+                        div.setAttribute("style", "position: absolute; color: white; text-align: center; width: 150px; height: 150px; padding-bottom: 100%; background: #444a5a; border-radius: 50%; top: 0; left: 0; transform: translate(-32%, -80%); box-sizing: border-box;")
+                        div.innerHTML = infowindow.content
+                        parent.appendChild(div)
+                        setTimeout(() => {
+                            document.querySelector('#marker-' + self.mapName).style.opacity = '1'
+                        }, 100)
                     })
                 })   
             })

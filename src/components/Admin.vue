@@ -36,13 +36,13 @@
                                     .background(v-bind:style="{'background-image': 'url(https://image.flaticon.com/icons/svg/149/149094.svg)'}")
                                     textarea.title(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea") Virsraksts
                                     input#titleImg-New(type="file" accept="image/*" ref="profileImg" @change="replaceBackground($event)")
-                                    label.plus(for="titleImg-New") Mainīt bildi
+                                    label.plus(for="titleImg-New") Mainīt bildi <small>(<10 Mb)</small>
                             .text
                                 textarea.h4(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea") Apakšvirsraksts
                                 input.twoColumns(type="text" value="Sadaļas apraksts")
-                                p.desc(contenteditable="true" v-on:keyup="fizio2columnChange($event)")   Sadaļas apraksts
+                                p.desc(contenteditable="true" @paste.prevent.stop="onPaste" v-on:keyup="fizio2columnChange($event)")   Sadaļas apraksts
                                 input.pricingInp(type="text" value="Izcenojuma apraksts")
-                                p.pricing(contenteditable="true" v-on:keyup="fizioPricingChange($event)")   Izcenojuma apraksts
+                                p.pricing(contenteditable="true" @paste.prevent.stop="onPaste" v-on:keyup="fizioPricingChange($event)")   Izcenojuma apraksts
                             button(type="submit") Saglabāt
                             .cancel(@click="fizioNew = false") Atcelt
                     .fizioObj(v-for="section, index in info.fizioterapija.text")
@@ -53,7 +53,7 @@
                                     h4(@click="openSection($event, index, 0)") {{section.title}}
                                     textarea.title(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea" v-bind:value="section.title")
                                     input(v-bind:id="'titleImg-' + index" type="file" accept="image/*" ref="profileImg" @change="replaceBackground($event,index)")
-                                    label.plus(v-bind:for="'titleImg-' + index") Mainīt bildi
+                                    label.plus(v-bind:for="'titleImg-' + index") Mainīt bildi <small>(<10 Mb)</small>
                             .text
                                 textarea.h4(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea" v-bind:value="section.textTitle")
                                 input.twoColumns(type="text" v-model="section.textText")
@@ -64,9 +64,9 @@
                                         i I
                                     p.underline(@click="doCommand('underline', $event)" @mousedown="$event.preventDefault()")
                                         u U
-                                p.desc(contenteditable="true" :id="'fizio-desc-' + index" v-on:keyup="fizio2columnChange($event)")
+                                p.desc(contenteditable="true" @paste="onPaste" :id="'fizio-desc-' + index" v-on:keyup="fizio2columnChange($event)")
                                 input.pricingInp(type="text" v-model="section.textPrice")
-                                p.pricing(contenteditable="true" v-on:keyup="fizioPricingChange($event)")
+                                p.pricing(contenteditable="true" @paste.prevent.stop="onPaste" v-on:keyup="fizioPricingChange($event)")
                             button(type="submit") Saglabāt
                             .cancel(@click="closeFizio($event, index, 0)") Atcelt
                             .delete(@click="deleteFizio($event, index, 0)") Dzēst
@@ -83,13 +83,13 @@
                                     .background(v-bind:style="{'background-image': 'url(https://image.flaticon.com/icons/svg/149/149094.svg)'}")
                                     textarea.title(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea") Virsraksts
                                     input#titleImg-New(type="file" accept="image/*" ref="profileImg" @change="replaceBackground($event)")
-                                    label.plus(for="titleImg-New") Mainīt bildi
+                                    label.plus(for="titleImg-New") Mainīt bildi <small>(<10 Mb)</small>
                             .text
                                 textarea.h4(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea") Apakšvirsraksts
                                 input.twoColumns(type="text" value="Sadaļas apraksts")
-                                p.desc(contenteditable="true" v-on:keyup="fizio2columnChange($event)")   Sadaļas apraksts
+                                p.desc(contenteditable="true" @paste.prevent.stop="onPaste" v-on:keyup="fizio2columnChange($event)")   Sadaļas apraksts
                                 input.pricingInp(type="text" value="Izcenojuma apraksts")
-                                p.pricing(contenteditable="true" v-on:keyup="fizioPricingChange($event)")   Izcenojuma apraksts
+                                p.pricing(contenteditable="true" @paste.prevent.stop="onPaste" v-on:keyup="fizioPricingChange($event)")   Izcenojuma apraksts
                             button(type="submit") Saglabāt
                             .cancel(@click="vingrNew = false") Atcelt
                     .fizioObj(v-for="section, index in info.vingrosana.text")
@@ -100,7 +100,7 @@
                                     h4(@click="openSection($event, index, 1)") {{section.title}}
                                     textarea.title(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea" v-bind:value="section.title")
                                     input(v-bind:id="'titleImg-' + index" type="file" accept="image/*" ref="profileImg" @change="replaceBackground($event,index)")
-                                    label.plus(v-bind:for="'titleImg-' + index") Mainīt bildi
+                                    label.plus(v-bind:for="'titleImg-' + index") Mainīt bildi <small>(<10 Mb)</small>
                             .text
                                 textarea.h4(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea" v-bind:value="section.textTitle")
                                 input.twoColumns(type="text" v-model="section.textText")
@@ -111,9 +111,9 @@
                                         i I
                                     p.underline(@click="doCommand('underline', $event)" @mousedown="$event.preventDefault()")
                                         u U
-                                p.desc(contenteditable="true" v-on:keyup="fizio2columnChange($event)")
+                                p.desc(contenteditable="true" @paste.prevent.stop="onPaste" v-on:keyup="fizio2columnChange($event)")
                                 input.pricingInp(type="text" v-model="section.textPrice")
-                                p.pricing(contenteditable="true" v-on:keyup="fizioPricingChange($event)")
+                                p.pricing(contenteditable="true" @paste.prevent.stop="onPaste" v-on:keyup="fizioPricingChange($event)")
                             button(type="submit") Saglabāt
                             .cancel(@click="closeFizio($event, index, 1)") Atcelt
                             .delete(@click="deleteVingr($event, index, 1)") Dzēst
@@ -138,6 +138,9 @@
                             label.hideInp Pilns
                                 span.checkbox
                                 input(type="checkbox" @change="$event.target.parentElement.classList.toggle('checked')")
+                            .location
+                                select
+                                    option(v-for="location, index in info.kontakti.text" :selected="index == 0 ? 'selected' : ''" :value="location.street") {{location.street}}
                             .empty
                             .cancel(@click="kalNew = false") Atcelt
                             input.save(type="submit" value="Saglabāt")
@@ -164,6 +167,9 @@
                             label.hideInp(:class="{'checked': training.full == '1'}") Pilns
                                 span.checkbox
                                 input(type="checkbox" v-bind:checked="training.full == '1'" @change="$event.target.parentElement.classList.toggle('checked')")
+                            .location
+                                select(v-model="training.location")
+                                    option(v-for="location, index in info.kontakti.text" :selected="index == 0 ? 'selected' : ''" :value="location.street") {{location.street}}
                             .empty
                             .cancel(@click = "cancelKal($event, index)") Atcelt
                             input.save(type="submit" value="Saglabāt")
@@ -181,9 +187,9 @@
                         label Telefona numurs
                             input#kontSiaPhone(type="text" v-bind:value="info.kontakti.pageInfo[0].siaPhone")
                         fieldset.address(v-for="add, index in info.kontakti.text")
-                            label Vietas nosaukums
+                            label Vietas nosaukums (tiek uzrādīts nodarbību grafikā un noklikšķinot uz Google Maps ikonas)
                                 input(type="text" v-bind:value="add.street")
-                            label Pilna adrese
+                            label Pilna adrese (tiek izmantota, lai atrastu vietu Google Maps, un tiek parādīta sadaļā Kontakti)
                                 input.contEdit(type="text" @change="adressChange($event, index)" v-bind:value="add.streetFull")
                             label.lat Lat
                                 input(type="text" v-bind:value="add.lat")
@@ -232,7 +238,7 @@
                                     .background(v-bind:style="{'background-image': 'url(https://image.flaticon.com/icons/svg/149/149094.svg)'}")
                                     textarea.title(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea") Virsraksts
                                     input#newAbouttitleImg(type="file" accept="image/*" ref="profileImg" @change="replaceBackground($event)")
-                                    label.plus(for="newAbouttitleImg") Mainīt bildi
+                                    label.plus(for="newAbouttitleImg") Mainīt bildi <small>(<10 Mb)</small>
                             .text
                                 .buttons
                                     p.bold(@click="doCommand('bold', $event)" @mousedown="$event.preventDefault()")
@@ -242,7 +248,7 @@
                                     p.underline(@click="doCommand('underline', $event)" @mousedown="$event.preventDefault()")
                                         u U
                                 input.pricingInp
-                                p.pricing(contenteditable="true" v-on:keyup="fizioPricingChange($event)")
+                                p.pricing(contenteditable="true" @paste.prevent.stop="onPaste" v-on:keyup="fizioPricingChange($event)")
                             button(type="submit") Saglabāt
                             .cancel(@click="aboutNew = false") Atcelt
                     .fizioObj.about-container(v-for="section, index in info.parmums.text")
@@ -253,7 +259,7 @@
                                     h4(@click="openSection($event, index, 2)") {{section.title}}
                                     textarea.title(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea" v-bind:value="section.title")
                                     input(v-bind:id="'titleImg-' + index" type="file" accept="image/*" ref="profileImg" @change="replaceBackground($event,index)")
-                                    label.plus(v-bind:for="'titleImg-' + index") Mainīt bildi
+                                    label.plus(v-bind:for="'titleImg-' + index") Mainīt bildi <small>(<10 Mb)</small>
                             .text
                                 .buttons
                                     p.bold(@click="doCommand('bold', $event)" @mousedown="$event.preventDefault()")
@@ -263,7 +269,7 @@
                                     p.underline(@click="doCommand('underline', $event)" @mousedown="$event.preventDefault()")
                                         u U
                                 input.pricingInp(v-bind:value="section.text")
-                                p.pricing(contenteditable="true" v-on:keyup="fizioPricingChange($event)")
+                                p.pricing(contenteditable="true" @paste.prevent.stop="onPaste" v-on:keyup="fizioPricingChange($event)")
                             button(type="submit") Saglabāt
                             .cancel(@click="closeFizio($event, index, 2)") Atcelt
                             .delete(@click="deleteAbout($event, index)") Dzēst
@@ -280,7 +286,7 @@
                                     .background(v-bind:style="{'background-image': 'url(https://image.flaticon.com/icons/svg/149/149094.svg)'}") 
                                     textarea.title(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea") Nosaukums
                                     input#newGalTitleImg(type="file" accept="image/*" ref="profileImg" @change="replaceBackground($event)")
-                                    label.plus(for="newGalTitleImg") Mainīt bildi                           
+                                    label.plus(for="newGalTitleImg") Mainīt bildi <small>(<10 Mb)</small>
                             .text
                                 .small-image-container
                                     .small-image(v-for="img, kindex in tempGal[tempGal.length - 1]")
@@ -295,6 +301,7 @@
                                             .img
                                                 input(v-bind:id="'smallImg-' + tempGal.length - 1" type="file" accept="image/*" ref="profileImg" multiple @change="addSmallImage($event,tempGal.length - 1)")
                                                 label.plus(v-bind:for="'smallImg-' + tempGal.length - 1" :style="{'background-image': 'url(https://image.flaticon.com/icons/svg/149/149092.svg)'}")
+                                                p <small>(<10 Mb)</small>
                                             .youtube
                                                 img(@click="open($event, 'youtube', 'container')" src="https://image.flaticon.com/icons/svg/33/33671.svg")
                                             .youtube-link
@@ -317,7 +324,7 @@
                                     h4(@click="openSection($event, index, 3)") {{gal.title}}
                                     textarea.title(v-on:change="adjustTextArea" v-on:keyup="adjustTextArea" v-bind:value="gal.title")
                                     input(v-bind:id="'gtitleImg-' + index" type="file" accept="image/*" ref="profileImg" @change="replaceBackground($event,index)")
-                                    label.plus(v-bind:for="'gtitleImg-' + index") Mainīt bildi                           
+                                    label.plus(v-bind:for="'gtitleImg-' + index") Mainīt bildi <small>(<10 Mb)</small>
                             .text
                                 .small-image-container
                                     .small-image(v-for="img, jindex in gal.images")
@@ -337,6 +344,7 @@
                                             .img
                                                 input(v-bind:id="'smallImg-' + index" type="file" accept="image/*" ref="profileImg" @change="addSmallImage($event,index)")
                                                 label.plus(v-bind:for="'smallImg-' + index" :style="{'background-image': 'url(https://image.flaticon.com/icons/svg/149/149092.svg)'}")
+                                                p <small>(<10 Mb)</small>
                                             .youtube
                                                 img(@click="open($event, 'youtube', 'container')" src="https://image.flaticon.com/icons/svg/33/33671.svg")
                                             .youtube-link
@@ -473,6 +481,22 @@ export default {
                 'LOGIN',
             ]
         ),
+        onPaste (e) {
+            let clipboardData, pastedData
+            clipboardData = e.clipboardData || window.clipboardData
+            pastedData = clipboardData.getData('text/plain')
+            document.execCommand('insertText', false, pastedData)
+            let target = e.target
+            while (target.tagName.toLowerCase() !== 'p') {
+                target = target.parentElement
+            }
+            target.contentEditable = false
+            setTimeout(() => {
+                target.contentEditable = true
+                target.focus()
+            }, 100)
+            return false
+        },
         adjustTextArea (el) {
             el.target.style.height = el.target.scrollHeight + 'px'
             el.target.parentElement.classList.add('edited')
@@ -820,6 +844,7 @@ export default {
                 time: e.target[1].value + ':' + e.target[2].value,
                 max_count: e.target[4].value,
                 full: e.target[5].checked === true ? '1' : '0',
+                location: e.target[6].value,
                 nav_url: 'saveKal',
                 id: i,
             }
@@ -882,6 +907,7 @@ export default {
                 time: e.target[1].value + ':' + e.target[2].value,
                 max_count: e.target[4].value,
                 full: e.target[5].checked === true ? '1' : '0',
+                location: e.target[6].value,
                 nav_url: 'createKal',
             }
             this.inprocess.kalen = true
@@ -922,7 +948,8 @@ export default {
 
                     self.tempAddr.push([{
                         lat: data.lat,
-                        lng: data.lng
+                        lng: data.lng,
+                        street: data.street
                     }])
                     self.CREATE_DATA(data)
                     self.kontNew = false
@@ -948,6 +975,7 @@ export default {
                 if (res.status === 'OK' && i < 99999) {
                     self.tempAddr[i][0].lat = res.results[0].geometry.location.lat
                     self.tempAddr[i][0].lng = res.results[0].geometry.location.lng
+                    self.tempAddr[i][0].street = self.info.kontakti.text[i].street
                     self.info.kontakti.text[i].lat = self.tempAddr[i][0].lat
                     self.info.kontakti.text[i].lng = self.tempAddr[i][0].lng
                     self.info.kontakti.text[i].streetFull = e.target.value
@@ -1365,7 +1393,8 @@ export default {
             for (let i = 0; i < this.info.kontakti.text.length; i++) {
                 this.tempAddr.push([{
                     lat: this.info.kontakti.text[i].lat,
-                    lng: this.info.kontakti.text[i].lng
+                    lng: this.info.kontakti.text[i].lng,
+                    street: this.info.kontakti.text[i].street,
                 }])
             }
             this.edit.kont = true
@@ -1738,6 +1767,10 @@ export default {
             padding-left    1em
         .delete
             margin-top  1em
+        .location
+            padding 0 1em 0.5em
+            select
+                width   100%
         select
             font-size       1em
             padding         0.5em
@@ -1869,6 +1902,10 @@ export default {
                                     background-position center
                                     background-repeat   no-repeat
                                     cursor              pointer
+                                p
+                                    margin  0
+                                    text-align  center
+                                    border      none
                                 img
                                     opacity 1
                                 &:hover

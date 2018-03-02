@@ -26,7 +26,7 @@
                 label(for="insurance")
                 div vajadzīgs rēķins apdrošināšanas kompānijai
             .input-holder(v-if="insurance")
-                input(type="number" placeholder="PERSONAS KODS" v-model="persID")
+                input(type="number" placeholder="PERSONAS KODS" min="0" v-model="persID")
                 span.white
                 span.blue
                 span.extrawhite
@@ -199,6 +199,13 @@ export default {
                     outline         none
                     &.red
                         border-left 1px solid rgba(255,0,0, 0.8)
+                    &[type='number'],
+                    &::-webkit-outer-spin-button,
+                    &::-webkit-inner-spin-button
+                        -moz-appearance     textfield
+                        -webkit-appearance  none
+                        appearance          none
+                        margin              0
             .insurance
                 margin  1em 0
                 input

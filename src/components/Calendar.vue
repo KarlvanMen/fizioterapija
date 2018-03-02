@@ -18,6 +18,7 @@
                                 template(v-for="training, index in trainings")
                                     .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active, full: training.full == '1'}")
                                         .title {{training.title}}
+                                        .location {{training.location}}
                                         .time {{training.time}}
                 .month.this-month
                     .daysOfWeek.pc
@@ -30,6 +31,7 @@
                                 template(v-for="training, index in trainings")
                                     .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active, grey: training.day < currentDate.day, full: training.full == '1'}")
                                         .title {{training.title}}
+                                        .location {{training.location}}
                                         .time {{training.time}}
                 .month.next-month
                     .daysOfWeek.pc
@@ -42,13 +44,16 @@
                                 template(v-for="training, index in trainings")
                                     .training-container(v-if="trainingIsThisDay(training, day)" @click="addTraining(index)" :class="{active: training.active, full: training.full == '1'}")
                                         .title {{training.title}}
+                                        .location {{training.location}}
                                         .time {{training.time}}
                 .arrow.next.no-pc(@click="nextWeek" v-if="activeDate.day + activeDate.month * 31 + activeDate.year < dates.nextMonth[dates.nextMonth.length - 1][0].day + dates.nextMonth[dates.nextMonth.length - 1][0].month * 31 + dates.nextMonth[dates.nextMonth.length - 1][0].year + 6")
         .main.no-pc
             .trainings
                 template(v-for="training, index in trainings")
                     .training-container(v-if="trainingIsToday(training)" @click="addTraining(index)" :class="{active: training.active, grey: training.day + training.month * 31 + training.year < currentDate.day + currentDate.month * 31 + currentDate.year, full: training.full == '1'}")
-                        .title {{training.title}}
+                        .left-side
+                            .title {{training.title}}
+                            .location {{training.location}}
                         .time {{training.time}}
         .reservation
         Popup(v-if="displayPopup" :trainings="innerTrainings")
@@ -402,6 +407,18 @@ export default {
 
 <style lang="stylus" scoped>
 .calendar
+    .location
+        font-size   0.7em
+        font-weight normal
+        text-align  left
+        border      1px solid #169cdd
+        border-top  none
+        width       100%
+        box-sizing  border-box
+        font-family 'Montserrat Light'
+        padding     0.5em
+        width       170px
+        max-width   100%
     .pc
         display none
     .header
@@ -525,7 +542,7 @@ export default {
                 .title
                     width   170px
                     border  1px solid #169cdd
-                    padding 0.5em 1em
+                    padding 0.5em
                     box-sizing  border-box
                 .time
                     width       80px
@@ -675,12 +692,12 @@ export default {
                                     display         flex
                                     justify-content center
                                     align-items     stretch
-                                    margin-top      30px
+                                    margin-top      0
                                     flex-wrap       wrap
                                     cursor          pointer
                                     .title
                                         border          1px solid #169cdd
-                                        padding         5px 2px
+                                        padding         0.5em
                                         flex            1 1 auto
                                         margin-right    0
                                         font-size       0.85em
