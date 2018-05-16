@@ -17,6 +17,7 @@
                         .bttns
                             input.save(type="submit" value="Saglabāt")
                             .cancel(@click = "edit.home = false") Atcelt
+            // Fizio.page(:info="info.fizioterapija")
             .page.fizio
                 h3 Fizioterapija
                 .edit(@click="edit.fizio = true" v-if="!edit.fizio") Labot
@@ -138,9 +139,8 @@
                             label.hideInp Pilns
                                 span.checkbox
                                 input(type="checkbox" @change="$event.target.parentElement.classList.toggle('checked')")
-                            .location
-                                select
-                                    option(v-for="location, index in info.kontakti.text" :selected="index == 0 ? 'selected' : ''" :value="location.street") {{location.street}}
+                            label.location
+                                input(type="text" placeholder="Vieta")
                             .empty
                             .cancel(@click="kalNew = false") Atcelt
                             input.save(type="submit" value="Saglabāt")
@@ -167,9 +167,8 @@
                             label.hideInp(:class="{'checked': training.full == '1'}") Pilns
                                 span.checkbox
                                 input(type="checkbox" v-bind:checked="training.full == '1'" @change="$event.target.parentElement.classList.toggle('checked')")
-                            .location
-                                select(v-model="training.location")
-                                    option(v-for="location, index in info.kontakti.text" :selected="index == 0 ? 'selected' : ''" :value="location.street") {{location.street}}
+                            label.location
+                                input(type="text" placeholder="Vieta" v-model="training.location")
                             .empty
                             .cancel(@click = "cancelKal($event, index)") Atcelt
                             input.save(type="submit" value="Saglabāt")
@@ -367,6 +366,7 @@ import Datepicker from 'vuejs-datepicker'
 import { mapActions, mapGetters } from 'vuex'
 import docCookies from '../store/cookies.js'
 import Gmap from './Gmap.vue'
+import Fizio from './admin/fizio.vue'
 import axios from 'axios'
 
 export default {
@@ -482,6 +482,8 @@ export default {
             ]
         ),
         onPaste (e) {
+            e.preventDefault()
+            e.stopPropagation()
             let clipboardData, pastedData
             clipboardData = e.clipboardData || window.clipboardData
             pastedData = clipboardData.getData('text/plain')
@@ -494,7 +496,7 @@ export default {
             setTimeout(() => {
                 target.contentEditable = true
                 target.focus()
-            }, 100)
+            }, 500)
             return false
         },
         adjustTextArea (el) {
@@ -727,19 +729,19 @@ export default {
         saveKontakti (e) {
             let data = {
                 siaTitle: e.target[0].value,
-                siaPhone: e.target[2].value,
                 siaEmail: e.target[1].value,
+                siaPhone: e.target[2].value,
                 nav_url: 'updateKont',
             }
             let addresses = e.target.querySelectorAll('fieldset').length
             let aData = []
             for (let i = 0; i < addresses; i++) {
                 aData.push({
-                    lat: e.target[6 + 6 * i].value,
-                    lng: e.target[7 + 6 * i].value,
-                    street: e.target[4 + 6 * i].value,
-                    streetFull: e.target[5 + 6 * i].value,
-                    additional: e.target[8 + 6 * i].value,
+                    street: e.target[4 + 9 * i].value,
+                    streetFull: e.target[5 + 9 * i].value,
+                    lat: e.target[6 + 9 * i].value,
+                    lng: e.target[7 + 9 * i].value,
+                    additional: e.target[8 + 9 * i].value,
                     nav_url: 'updateAdd',
                     id: this.info.kontakti.text[i].id
                 })
@@ -851,6 +853,7 @@ export default {
             this.inprocess.kalen = true
             let self = this
             self.EDIT_SECTION(data).then((res) => {
+                console.log(res)
                 if (res.response) {
                     for (var key in data) {
                         if (self.info.kalendars.trainings[j].hasOwnProperty(key)) {
@@ -858,8 +861,8 @@ export default {
                         }
                     }
                     e.target.parentElement.classList.remove('open')
-                    self.inprocess.kalen = false
                 }
+                self.inprocess.kalen = false
             })
         },
         dateToString (val) {
@@ -1411,7 +1414,8 @@ export default {
     },
     components: {
         Gmap,
-        Datepicker
+        Datepicker,
+        Fizio
     },
     created () {
         if (docCookies.getItem('login') !== null) {
@@ -1781,6 +1785,15 @@ export default {
             &:focus-within,
             &:hover
                 border-color    #169cdd
+        .editable
+            .training-container
+                form
+                    .location
+                        input
+                            width   90%
+                            width   calc(100% - 2em)
+                            border  1px solid #169cdd
+                            color   inherit
     .kontakti
         .editable
             .bttns

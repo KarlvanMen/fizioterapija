@@ -1,5 +1,5 @@
 <template lang="pug">
-    .gmap#map(:id="mapName" v-bind:data-marker="markerCoordinates[0].lat")
+    .gmap(:id="mapName" v-bind:data-marker="markerCoordinates[0].lat")
 </template>
 
 <script>
@@ -19,6 +19,7 @@ export default {
     },
     methods: {
         initMap () {
+            let self = this
             this.lat = this.markerCoordinates[0].lat
             this.lng = this.markerCoordinates[0].lng
             let element = document.getElementById(this.mapName)
@@ -27,7 +28,7 @@ export default {
                 lng: parseFloat(this.markerCoordinates[0].lng)
             }
             let options = {            
-                zoom: 15,
+                zoom: 1,
                 center: mapCentre,
                 scrollwheel: true,
                 styles: [
@@ -268,38 +269,36 @@ export default {
                 ],
             }
             GoogleMapsLoader.KEY = 'AIzaSyA4ADLbwhDEbOpNpixZrpUi4D_edka4R4A'
-            let self = this
             GoogleMapsLoader.load(function(google) {
+                require('./gmap/richmaker.js')
                 let gMap = new google.maps.Map(element, options)
+                let bounds = new google.maps.LatLngBounds()
                 self.markerCoordinates.forEach((coord) => {
-                    let position = new google.maps.LatLng(coord.lat, coord.lng)
-                    let marker = new google.maps.Marker({
-                        position,
+                    let position = new google.maps.LatLng(coord.lat, coord.lng)                    
+                    let marker = new RichMarker({
+                        position: position,
                         map: gMap,
-                        // icon: '../assets/gmarker.svg',
-                        icon: 'https://dl.dropboxusercontent.com/s/ggl34b80akir69a/gmarker.svg?dl=0',                        
+                        draggable: false,
+                        content: '<div><img src="https://dl.dropboxusercontent.com/s/ggl34b80akir69a/gmarker.svg?dl=0"/></div>',
+                        shadow: false,
                     })
-                    let infowindow = new google.maps.InfoWindow({
-                        content: '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; width: 120px;" id="hook-' + self.mapName + '"><b>ADRESE</b><br>' + coord.street + '</div>'
-                    })
-                    marker.addListener('click', function() {
-                        infowindow.open(gMap, marker)
-                        let parent = self.$el.querySelector('#hook-' + self.mapName).parentElement.parentElement.parentElement.parentElement
-                        let ch = parent.children
-                        for(let i = 0; i < ch.length; i++) {
-                            ch[i].style.display = "none"
+                    bounds.extend(marker.position)
+
+                    let count = 0;
+                    google.maps.event.addListener(marker, 'click', function() {
+                        count++;
+                        if(count%2 === 0) {
+                            marker.setContent('<div><img src="https://dl.dropboxusercontent.com/s/ggl34b80akir69a/gmarker.svg?dl=0"/></div>')
+                        } else {
+                            marker.setContent('<div style="position: relative"><div style="position: absolute; border-radius: 50%; bottom: 100%; margin-bottom: 5px; left: 50%; width: 150px; height: 150px; background-color: #444a5a; transform: translateX(-50%); font-size: 14px; color: white; display: flex; flex-flow: column; justify-content: center; align-items: center; text-align: center;"><p style="max-width: 100%; box-sizing: border-box; padding: 0 10px;"><b>' + coord.street + '</b><br><small>' + coord.streetFull + '</small></p></div><img src="https://dl.dropboxusercontent.com/s/ggl34b80akir69a/gmarker.svg?dl=0"/></div>')
                         }
-                        let div = document.createElement('div')
-                        div.id = 'marker-' + self.mapName
-                        div.setAttribute("style", "position: absolute; color: white; text-align: center; width: 150px; height: 150px; padding-bottom: 100%; background: #444a5a; border-radius: 50%; top: 0; left: 0; transform: translate(-32%, -80%); box-sizing: border-box;")
-                        div.innerHTML = infowindow.content
-                        parent.appendChild(div)
-                        setTimeout(() => {
-                            document.querySelector('#marker-' + self.mapName).style.opacity = '1'
-                        }, 100)
-                    })
-                })   
-            })
+                    });
+                })  
+                gMap.fitBounds(bounds)
+                setTimeout(() => {
+                    gMap.setZoom(gMap.zoom - 1)
+                }, 5)
+            })          
         }
     },
     mounted: function () {

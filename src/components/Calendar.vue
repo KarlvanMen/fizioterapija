@@ -188,7 +188,7 @@ export default {
             let daysOfNextMonth = []
             let lengthOfThisMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
             let thisMonthLastDay = firstDayOfThisMonth + lengthOfThisMonth % 7 - 1
-            if (thisMonthLastDay > 7) thisMonthLastDay = 7 - thisMonthLastDay
+            if (thisMonthLastDay > 7) thisMonthLastDay = thisMonthLastDay - 7
             for (let i = thisMonthLastDay; i < 7; i++) {
                 daysOfNextMonth.push(i - thisMonthLastDay + 1)
             }
@@ -324,6 +324,16 @@ export default {
                         month.classList.remove('open')
                     }
                 }
+                if (this.showPrev === true && this.showNext === false) {
+                    for (let i = 0; i < months.length; i++) {
+                        if (months[i].classList.contains('this-month')) {
+                            months[i].classList.remove('open')
+                        }
+                        if (months[i].classList.contains('next-month')) {
+                            months[i].classList.add('open')
+                        }
+                    }
+                }
                 let openMonths = this.$el.querySelectorAll('.month.open')
                 if (openMonths.length > 1) openMonths[0].classList.remove('open')
             }, 50)
@@ -419,6 +429,7 @@ export default {
         padding     0.5em
         width       170px
         max-width   100%
+        word-break  break-word
     .pc
         display none
     .header
@@ -534,8 +545,9 @@ export default {
                 &.grey,
                 &.full
                     pointer-events  none
-                    .title
-                        border      1px solid #b0b0b0
+                    .title,
+                    .location
+                        border-color    #b0b0b0
                     .time
                         background  #b0b0b0
                         border      1px solid #b0b0b0
@@ -700,7 +712,8 @@ export default {
                                         padding         0.5em
                                         flex            1 1 auto
                                         margin-right    0
-                                        font-size       0.85em
+                                        font-size       14px
+                                        box-sizing      border-box
                                     .time
                                         flex            1 1 auto
                                         background      #169cdd
@@ -712,8 +725,9 @@ export default {
                                     &.grey,
                                     &.full
                                         pointer-events  none
-                                        .title
-                                            border      1px solid #b0b0b0
+                                        .title,
+                                        .location
+                                            border-color    #b0b0b0
                                         .time
                                             background  #b0b0b0
                                     &.active

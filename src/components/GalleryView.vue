@@ -75,28 +75,28 @@ export default {
             this.mostLeftPC++
             this.textFiltered().images[this.mostLeft + 3].display = true
             this.textFiltered().images[this.mostLeft - 1].display = false
-            this.textFiltered().images[this.mostLeftPC + 9].displayPC = true
-            this.textFiltered().images[this.mostLeftPC - 1].displayPC = false
+            if (typeof this.textFiltered().images[this.mostLeftPC + 9] !== 'undefined') this.textFiltered().images[this.mostLeftPC + 9].displayPC = true
+            if (typeof this.textFiltered().images[this.mostLeftPC - 1] !== 'undefined') this.textFiltered().images[this.mostLeftPC - 1].displayPC = false
         },
         prev () {
             this.mostLeft--
             this.textFiltered().images[this.mostLeft].display = true
-            this.textFiltered().images[this.mostLeft + 4].display = false
+            if (typeof this.textFiltered().images[this.mostLeftPC + 4] !== 'undefined') this.textFiltered().images[this.mostLeft + 4].display = false
             this.mostLeftPC--
             this.textFiltered().images[this.mostLeftPC].displayPC = true
-            this.textFiltered().images[this.mostLeftPC + 10].displayPC = false
+            if (typeof this.textFiltered().images[this.mostLeftPC + 10] !== 'undefined') this.textFiltered().images[this.mostLeftPC + 10].displayPC = false
         },
         nextBig () {
             this.mostLeft++
             this.current++
             if (this.mostLeft + 4 > this.textFiltered().images.length) this.mostLeft = this.textFiltered().images.length - 4
             if (this.current + 1 > this.textFiltered().images.length) this.current = this.textFiltered().images.length - 1
-            this.textFiltered().images[this.mostLeft + 3].display = true
-            this.textFiltered().images[this.mostLeft - 1].display = false
+            if (typeof this.textFiltered().images[this.mostLeftPC + 3] !== 'undefined') this.textFiltered().images[this.mostLeft + 3].display = true
+            if (typeof this.textFiltered().images[this.mostLeftPC - 1] !== 'undefined') this.textFiltered().images[this.mostLeft - 1].display = false
             this.mostLeftPC++
             if (this.mostLeftPC + 10 > this.textFiltered().images.length) this.mostLeftPC = this.textFiltered().images.length - 10
-            this.textFiltered().images[this.mostLeftPC + 9].displayPC = true
-            this.textFiltered().images[this.mostLeftPC - 1].displayPC = false
+            if (typeof this.textFiltered().images[this.mostLeftPC + 9] !== 'undefined') this.textFiltered().images[this.mostLeftPC + 9].displayPC = true
+            if (typeof this.textFiltered().images[this.mostLeftPC - 1] !== 'undefined') this.textFiltered().images[this.mostLeftPC - 1].displayPC = false
             this.changeBig(this.current)
         },
         prevBig () {
@@ -105,11 +105,11 @@ export default {
             if (this.mostLeft < 0) this.mostLeft = 0
             if (this.current < 0) this.current = 0
             this.textFiltered().images[this.mostLeft].display = true
-            this.textFiltered().images[this.mostLeft + 4].display = false
+            if (typeof this.textFiltered().images[this.mostLeftPC + 4] !== 'undefined') this.textFiltered().images[this.mostLeft + 4].display = false
             this.mostLeftPC--
             if (this.mostLeftPC < 0) this.mostLeftPC = 0
             this.textFiltered().images[this.mostLeftPC].displayPC = true
-            this.textFiltered().images[this.mostLeftPC + 10].displayPC = false
+            if (typeof this.textFiltered().images[this.mostLeftPC + 10] !== 'undefined') this.textFiltered().images[this.mostLeftPC + 10].displayPC = false
             this.changeBig(this.current)
         },
         showFirst () {
@@ -250,7 +250,7 @@ export default {
         width           100%
         align-items     center
         box-sizing      border-box
-        justify-content space-between
+        justify-content center
         .small-image
             width       25%
             flex        0 0 auto
@@ -280,7 +280,9 @@ export default {
                 right   0
         .container-all
             .small-image
-                width   10%
+                width       9.5%
+                margin      0 0.25%
+                box-sizing  border-box
         .big-container
             margin-top  2em
             .container

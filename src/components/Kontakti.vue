@@ -18,10 +18,14 @@
                         input(type="email" v-bind:placeholder="email")
                         input(type="text" v-bind:placeholder="question")
                         input(type="submit" v-bind:value="send")
+                    .email-sent(v-if="showFeedback")
+                        .container
+                            p   Paldies, Jūsu informācija ir saņemta!
+                            p   Drīzumā uz Jūsu epastu tiks nosūtīta informācija nodarbības apmaksai.
                 .addresses
                     p
                         b {{pageInfo.siaTitle}}
-                    p(v-for="address in text" v-html="address.streetFull + '<br>' + (address.additional !== null ? address.additional : '')")
+                    p(v-for="address in text" v-html="'<span style=font-weight:600>' + address.street + '</span><br>' + address.streetFull + '<br>' + (address.additional !== null ? address.additional : '')")
                     p
                         b {{email}}
                     p(v-html="pageInfo.siaEmail")
@@ -45,7 +49,8 @@ export default {
             send: 'NOSŪTĪT',
             talrunis: 'TĀLRUNIS',
             text: [],
-            pageInfo: {}
+            pageInfo: {},
+            showFeedback: false,
         }
     },
     methods: {
@@ -63,11 +68,16 @@ export default {
             if (data.email === '') e.target[2].classList.add('red')
             if (data.question === '') e.target[3].classList.add('red')
             if (!(data.name === '' || data.phone === '' || data.email === '' || data.question === '')) {
+                let self = this
                 this.EDIT_SECTION(data).then((res) => {
                     e.target[0].value = ''
                     e.target[1].value = ''
                     e.target[2].value = ''
                     e.target[3].value = ''
+                    self.showFeedback = true
+                    setTimeout(() => {
+                        self.showFeedback = false
+                    }, 5000)
                 })
             }
         },
@@ -108,6 +118,7 @@ export default {
         margin  1.5em auto
         width   270px
     .question
+        position relative
         form
             position    relative
             .background
@@ -142,6 +153,20 @@ export default {
                 &:hover
                     background      #3cace2
                     color           white
+        .email-sent
+            position    absolute
+            top         0
+            left        0
+            right       0
+            bottom      0
+            background  white
+            z-index     1000
+            .container
+                display     block
+                padding     1px 10px
+                border      2px solid #169bdc
+                min-height  1px
+                margin      10px
     @media screen and (min-width: 1000px)
         min-height  calc(100vh - 62px)
         overflow    hidden

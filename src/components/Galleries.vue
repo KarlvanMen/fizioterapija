@@ -176,8 +176,8 @@ export default {
                         top     0
                         left    0
                     h2
-                        display inline-block
-                        height  1.5em
+                        display     inline-block
+                        text-align  center
     @media screen and (min-width: 1298px)
         .title 
             width           100%      

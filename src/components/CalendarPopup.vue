@@ -31,6 +31,10 @@
                 span.blue
                 span.extrawhite
             button(type="submit") PIETEIKTIES
+        .email-sent(v-if="showFeedback")
+            .container
+                p   Paldies, Jūsu informācija ir saņemta!
+                p   Drīzumā uz Jūsu epastu tiks nosūtīta informācija nodarbības apmaksai.
 </template>
 
 <script>
@@ -46,15 +50,19 @@ export default {
             insurance: false,
             persID: '',
             minimize: false,
-            style: ''
+            style: '',
+            style2: '',
+            showFeedback: false
         }
     },
     watch: {
         minimize () {
             if (this.minimize) {
                 document.body.style.overflow = 'visible'
+                document.documentElement.style.overflow = 'visible'
             } else {
                 document.body.style.overflow = 'hidden'
+                document.documentElement.style.overflow = 'hidden'
             }
         },
     },
@@ -84,17 +92,32 @@ export default {
             if (!(this.name === '' || this.phone === '' || this.email === '')) {
                 let self = this
                 this.EDIT_SECTION(data).then((res) => {
-                    self.minimize = true
+                    self.showFeedback = true
+                    for (let i = 0; i < self.trainings.length; i++) {
+                        self.trainings[i].active = false
+                    }
+                    self.name = ''
+                    self.phone = ''
+                    self.email = ''
+                    self.insurance = false
+                    self.persID = ''
+                    setTimeout(() => {
+                        self.showFeedback = false
+                        self.minimize = true
+                    }, 5000)
                 })
             }
         },
     },
     mounted () {
         this.style = document.body.style.cssText
+        this.style2 = document.documentElement.style.cssText
         document.body.style.overflow = 'hidden'
+        document.documentElement.style.overflow = 'hidden'
     },
     beforeDestroy () {
         document.body.style.cssText = this.style
+        document.documentElement.style.overflow = this.style2
     },
     props: ['trainings']
 }
@@ -102,7 +125,7 @@ export default {
 
 <style lang="stylus" scoped>
     .popup
-        position    absolute
+        position    fixed
         top         63px
         border-top  2px solid #3cace2
         left        0
@@ -112,6 +135,9 @@ export default {
         padding     2em 3em 0
         max-height  1000px
         z-index     100
+        max-height  calc(100vh - 63px)
+        box-sizing  border-box
+        overflow    auto
         &:before
             content     ''
             position    absolute
@@ -143,7 +169,7 @@ export default {
             right               5px
         .trainings,
         form
-            margin-bottom   2em
+            padding-bottom   2em
             .training
                 text-transform  uppercase
                 font-size       0.8em
@@ -240,6 +266,17 @@ export default {
                 &:hover
                     background      #3cace2
                     color           white
+        .email-sent
+            position    absolute
+            top         2em
+            left        2.5em
+            right       2.5em
+            bottom      2em
+            background  white
+            z-index     1000
+            .container
+                padding 1px 10px
+                border  2px solid #17c37b
         @media screen and (min-width: 1000px)
             position    fixed
             left        auto
