@@ -24,17 +24,24 @@
             .insurance
                 input#insurance(type="checkbox" v-model="insurance")
                 label(for="insurance")
-                div vajadzīgs rēķins apdrošināšanas kompānijai
+                div Vēlos norādīt savu personas kodu rēķinā
             .input-holder(v-if="insurance")
                 input(type="number" placeholder="PERSONAS KODS" min="0" v-model="persID")
                 span.white
                 span.blue
                 span.extrawhite
+            .vdar
+                input#vdar(type="checkbox" v-model="vdar")
+                label(for="vdar")
+                div Apstiprinu, ka dati ir pareizi un piekrītu savu personas datu apstrādei
             button(type="submit") PIETEIKTIES
         .email-sent(v-if="showFeedback")
             .container
                 p   Paldies, Jūsu informācija ir saņemta!
                 p   Drīzumā uz Jūsu epastu tiks nosūtīta informācija nodarbības apmaksai.
+        .email-sent(v-if="showVdarFeedback")
+            .container.yellow
+                p   Vai piekrītat Jūsu personas datu apstrādei?
 </template>
 
 <script>
@@ -48,11 +55,13 @@ export default {
             phone: '',
             email: '',
             insurance: false,
+            vdar: false,
             persID: '',
             minimize: false,
             style: '',
             style2: '',
-            showFeedback: false
+            showFeedback: false,
+            showVdarFeedback: false
         }
     },
     watch: {
@@ -89,7 +98,15 @@ export default {
             if (this.name === '') e.target[0].classList.add('red')
             if (this.phone === '') e.target[1].classList.add('red')
             if (this.email === '') e.target[2].classList.add('red')
-            if (!(this.name === '' || this.phone === '' || this.email === '')) {
+            if (!this.vdar) {
+                e.target[4].classList.add('red')
+                this.showVdarFeedback = true
+                let self = this
+                setTimeout(() => {
+                    self.showVdarFeedback = false
+                }, 5000)
+            }
+            if (!(this.name === '' || this.phone === '' || this.email === '') && data.trainings.length && !this.vdar) {
                 let self = this
                 this.EDIT_SECTION(data).then((res) => {
                     self.showFeedback = true
@@ -181,7 +198,7 @@ export default {
                         position            absolute
                         top                 0
                         left                auto
-                        right               0
+                        right               -1.35em
                         bottom              0
                         background-image    url(../assets/x-blue.svg)
                         background-position center
@@ -232,11 +249,15 @@ export default {
                         -webkit-appearance  none
                         appearance          none
                         margin              0
-            .insurance
+            .insurance,
+            .vdar
                 margin  1em 0
                 input
                     display none
-                    &:checked + label
+                    &.red + label
+                        background-image    url(../assets/checkbox-red.svg)
+                    &:checked + label,
+                    &.red:checked + label
                         background-image    url(../assets/checkbox-checked.svg)
                 label
                     width   1.5em
@@ -249,7 +270,8 @@ export default {
                 div 
                     display inline-block
                     width   78%
-                    font-size   0.7em
+                    width   calc(100% - 3.5em)
+                    font-size   0.6em
                     text-transform  uppercase
                     vertical-align  middle
                     margin-left 1em
@@ -277,6 +299,8 @@ export default {
             .container
                 padding 1px 10px
                 border  2px solid #17c37b
+                &.yellow
+                    border-color #f00
         @media screen and (min-width: 1000px)
             position    fixed
             left        auto
@@ -285,6 +309,15 @@ export default {
             bottom      0
             width       220px
             z-index     100
+            padding     2em 1.5em 0
+            .email-sent
+                top 1px
+                left 1px
+                right 1px
+                bottom 1px
+                display flex
+                align-items center
+                justify-content center
         @media screen and (min-width: 1660px)
             left        50%
             right       auto
