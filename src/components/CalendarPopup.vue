@@ -1,6 +1,6 @@
 <template lang="pug">
     .popup(:class="{small: minimize}")
-        .minimize(@click="minimize = !minimize")
+        .minimize(@click="minPop()")
         .trainings
             .training(v-for="tr in trainings" v-if="tr.active")
                 .date
@@ -57,7 +57,6 @@ export default {
             insurance: false,
             vdar: false,
             persID: '',
-            minimize: false,
             style: '',
             style2: '',
             showFeedback: false,
@@ -65,15 +64,15 @@ export default {
         }
     },
     watch: {
-        minimize () {
-            if (this.minimize) {
-                document.body.style.overflow = 'visible'
-                document.documentElement.style.overflow = 'visible'
-            } else {
-                document.body.style.overflow = 'hidden'
-                document.documentElement.style.overflow = 'hidden'
-            }
-        },
+        // minimize () {
+        //     if (this.minimize) {
+        //     //     document.body.style.overflow = 'visible'
+        //     //     document.documentElement.style.overflow = 'visible'
+        //     // } else {
+        //     //     document.body.style.overflow = 'hidden'
+        //     //     document.documentElement.style.overflow = 'hidden'
+        //     }
+        // },
     },
     methods: {
         ...mapActions(['EDIT_SECTION']),
@@ -106,7 +105,7 @@ export default {
                     self.showVdarFeedback = false
                 }, 5000)
             }
-            if (!(this.name === '' || this.phone === '' || this.email === '') && data.trainings.length && !this.vdar) {
+            if (!(this.name === '' || this.phone === '' || this.email === '') && data.trainings.length && this.vdar) {
                 let self = this
                 this.EDIT_SECTION(data).then((res) => {
                     self.showFeedback = true
@@ -125,18 +124,21 @@ export default {
                 })
             }
         },
+        minPop () {
+            this.$emit('minPopup')
+        }
     },
-    mounted () {
-        this.style = document.body.style.cssText
-        this.style2 = document.documentElement.style.cssText
-        document.body.style.overflow = 'hidden'
-        document.documentElement.style.overflow = 'hidden'
-    },
-    beforeDestroy () {
-        document.body.style.cssText = this.style
-        document.documentElement.style.overflow = this.style2
-    },
-    props: ['trainings']
+    // mounted () {
+    //     this.style = document.body.style.cssText
+    //     this.style2 = document.documentElement.style.cssText
+    //     // document.body.style.overflow = 'hidden'
+    //     // document.documentElement.style.overflow = 'hidden'
+    // },
+    // beforeDestroy () {
+    //     document.body.style.cssText = this.style
+    //     document.documentElement.style.overflow = this.style2
+    // },
+    props: ['trainings', 'minimize']
 }
 </script>
 
@@ -152,7 +154,7 @@ export default {
         padding     2em 3em 0
         max-height  1000px
         z-index     100
-        max-height  calc(100vh - 63px)
+        max-height  calc(100vh - 83px)
         box-sizing  border-box
         overflow    auto
         &:before

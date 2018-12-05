@@ -56,7 +56,7 @@
                             .location {{training.location}}
                         .time {{training.time}}
         .reservation
-        Popup(v-if="displayPopup" :trainings="innerTrainings")
+        Popup(v-if="displayPopup" :trainings="innerTrainings" :minimize="minimize" v-on:minPopup="minimize = !minimize")
 </template>
 
 <script>
@@ -152,6 +152,7 @@ export default {
         addTraining (i) {
             this.trainings[i].active = !this.trainings[i].active
             this.displayPopup = true
+            this.minimize = false
         },
         addDates () {
             let today = new Date()
