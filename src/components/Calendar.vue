@@ -415,23 +415,19 @@ export default {
         },
         showNextArrow () {
             // Year check
-            console.log('Active year: ' + this.activeDate.year)
-            console.log('Last year: ' + this.dates.nextMonth[0][this.dates.nextMonth[0].length - 1].year)
-            if (this.activeDate.year > this.dates.nextMonth[0][this.dates.nextMonth[0].length - 1].year) {
+            if (this.activeDate.year > this.dates.nextMonth[this.dates.nextMonth.length - 1][this.dates.nextMonth[this.dates.nextMonth.length - 1].length - 1].year) {
                 return false
             } else {
-                if (this.activeDate.year === this.dates.nextMonth[0][this.dates.nextMonth[0].length - 1].year) {
+                if (this.activeDate.year === this.dates.nextMonth[this.dates.nextMonth.length - 1][this.dates.nextMonth[this.dates.nextMonth.length - 1].length - 1].year) {
                     // Month check
-                    console.log('Active month: ' + this.activeDate.month)
-                    console.log('Last month: ' + this.dates.nextMonth[0][this.dates.nextMonth[0].length - 1].month)
-                    if (this.activeDate.month > this.dates.nextMonth[0][this.dates.nextMonth[0].length - 1].month) {
+                    if (this.activeDate.month > this.dates.nextMonth[this.dates.nextMonth.length - 1][this.dates.nextMonth[this.dates.nextMonth.length - 1].length - 1].month) {
                         return false
                     } else {
                         // Day check
-                        console.log('Active day: ' + this.activeDate.day)
-                        console.log('Last day: ' + this.dates.nextMonth[0][this.dates.nextMonth[0].length - 1].day)
-                        if ((this.activeDate.day + 7) > this.dates.nextMonth[0][this.dates.nextMonth[0].length - 1].day) {
-                            return false
+                        if (this.activeDate.month === this.dates.nextMonth[this.dates.nextMonth.length - 1][this.dates.nextMonth[this.dates.nextMonth.length - 1].length - 1].month) {
+                            if ((this.activeDate.day + 7) > this.dates.nextMonth[this.dates.nextMonth.length - 1][this.dates.nextMonth[this.dates.nextMonth.length - 1].length - 1].day) {
+                                return false
+                            }
                         }
                     }
                 }
