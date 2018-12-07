@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Tests</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+</head>
+
+<body>
+
+
+<div class="container">
+
+    <div class="starter-template">
+        <h1>Tests</h1>
+        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
+    </div>
+    <div id="res"></div>
+    <span class="btn btn-light" onclick="getUser()">Get user</span>
+    <span class="btn btn-light" onclick="getUserData()">Get user data</span>
+    <span class="btn btn-light" onclick="doLogin()">Login</span>
+    <span class="btn btn-light" onclick="doLogout()">Logout</span>
+    <span class="btn btn-light" onclick="getSubj()">Get subjects</span>
+    <span class="btn btn-light" onclick="getCours()">Get courses</span>
+    <span class="btn btn-light" onclick="getMaterials()">Get materials</span>
+    <span class="btn btn-light" onclick="setComplete1_100()">Set 1 - 100</span>
+    <span class="btn btn-light" onclick="setComplete1_0()">Set 1 - 0</span>
+    <span class="btn btn-light" onclick="getResults()">Get results</span>
+
+    <hr>
+
+    <input type="text" class="form-control" id="cr" placeholder="custom request">
+
+</div><!-- /.container -->
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+    function getUser() {
+        makeReq('get_user&id=4');
+    }
+    function getUserData() {
+        makeReq('get_user_data');
+    }
+    function doLogout() {
+        makeReq('logout');
+    }
+    function getSubj() {
+        makeReq('get_subjects');
+    }
+    function getCours() {
+        makeReq('get_courses&subject=sub1');
+    }
+    function getMaterials() {
+        makeReq('get_materials&course=course1');
+    }
+
+    function setComplete1_100() {
+        makePost('set_done', '{"material_alias":"mat1","complete":"100"}');
+    }
+    function setComplete1_0() {
+        makePost('set_done', '{"material_alias":"mat1","complete":"0"}');
+    }
+    function getResults() {
+        makeReq('get_results');
+    }
+
+    function doLogin() {
+        $.ajax({
+            method: 'POST',
+            url: "api.php?r=login",
+            data: '{"login":"user","password":"pass"}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(msg) {
+                var myJSONString = JSON.stringify(msg);
+                var myEscapedJSONString = myJSONString.replace(/[\\n]/g, '')
+                .replace(/[\\]/g, '')
+                .replace(/[\"]/g, '')
+                .replace(/[\/]/g, '')
+                .replace(/[\b]/g, '')
+                .replace(/[\f]/g, '')
+                .replace(/[\n]/g, '')
+                .replace(/[\r]/g, '')
+                .replace(/[\t]/g, '');
+                $('#res').html(JSON.stringify(myEscapedJSONString), null, "\t");
+            }
+        });
+    }
+
+    function makeReq(req) {
+        $.ajax({
+            method: 'GET',
+            url: "api.php?r="+req,
+            success: function(msg) {
+                var myJSONString = JSON.stringify(msg);
+                var myEscapedJSONString = myJSONString.replace(/[\\n]/g, '')
+                .replace(/[\\]/g, '')
+                .replace(/[\"]/g, '')
+                .replace(/[\/]/g, '')
+                .replace(/[\b]/g, '')
+                .replace(/[\f]/g, '')
+                .replace(/[\n]/g, '')
+                .replace(/[\r]/g, '')
+                .replace(/[\t]/g, '');
+                $('#res').html(JSON.stringify(myEscapedJSONString), null, "\t");
+            }
+        });
+    }
+
+
+    function makePost(req, data) {
+        $.ajax({
+            method: 'POST',
+            url: "api.php?r="+req,
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(msg) {
+                var myJSONString = JSON.stringify(msg);
+                var myEscapedJSONString = myJSONString.replace(/[\\n]/g, '')
+                .replace(/[\\]/g, '')
+                .replace(/[\"]/g, '')
+                .replace(/[\/]/g, '')
+                .replace(/[\b]/g, '')
+                .replace(/[\f]/g, '')
+                .replace(/[\n]/g, '')
+                .replace(/[\r]/g, '')
+                .replace(/[\t]/g, '');
+                $('#res').html(JSON.stringify(myEscapedJSONString), null, "\t");
+            }
+        });
+    }
+</script>
+
+
+</body>
+</html>

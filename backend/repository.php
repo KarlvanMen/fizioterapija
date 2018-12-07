@@ -200,8 +200,8 @@ function updateKont ($val2, $val3, $val4)
 	$options=[
 	'id' => 1,
 	'siaTitle' => $val2,
-	'siaEmail' => $val3,
-	'siaPhone' => $val4,
+	'siaPhone' => $val3,
+	'siaEmail' => $val4,
 	];
 	
 	return update('kontakti', $options);
@@ -254,7 +254,7 @@ function uploadImage ()
 		$i++;
 	}
 	// 	Check file size
-	if ($_FILES["image"]["size"] > 2000000) {	
+	if ($_FILES["image"]["size"] > 10000000) {	
 		return 2;
 	}
 	// 	Allow certain file formats
@@ -303,7 +303,7 @@ function delVingrosana ($var1)
     return delete('vingrosana_text', $var1);
 }
 
-function saveKalendars ($title,$year,$month,$day,$time,$max_count,$full,$id)
+function saveKalendars ($title,$year,$month,$day,$time,$max_count,$full,$location,$id)
 {
     $data = [
         'title'  => $title,
@@ -313,12 +313,13 @@ function saveKalendars ($title,$year,$month,$day,$time,$max_count,$full,$id)
 		'time'  => $time,
 		'max_count'  => $max_count,
 		'full'  => $full,
+		'location'  => $location,
 		'id'  => $id,
     ];
     return update('kalendars_text', $data);
 }
 
-function createKalendars ($title,$year,$month,$day,$time,$max_count,$full)
+function createKalendars ($title,$year,$month,$day,$time,$max_count,$full,$location)
 {
     $data = [
         'title'  => $title,
@@ -328,6 +329,7 @@ function createKalendars ($title,$year,$month,$day,$time,$max_count,$full)
 		'time'  => $time,
 		'max_count'  => $max_count,
 		'full'  => $full,
+		'location'  => $location,
     ];
     return save('kalendars_text', $data);
 }
@@ -337,24 +339,26 @@ function delKalendars ($var1)
     return delete('kalendars_text', $var1);
 }
 
-function createAddress ($lat,$lng,$street,$streetFull)
-{
-    $data = [
-		'lat' => $lat,
-		'lng' => $lng,
-		'street' => $street,
-		'streetFull' => $streetFull
-    ];
-    return save('kontakti_text', $data);
-}
-
-function updateAddress ($lat,$lng,$street,$streetFull, $id)
+function createAddress ($lat,$lng,$street,$streetFull,$additional)
 {
     $data = [
 		'lat' => $lat,
 		'lng' => $lng,
 		'street' => $street,
 		'streetFull' => $streetFull,
+		'additional' => $additional,
+    ];
+    return save('kontakti_text', $data);
+}
+
+function updateAddress ($lat,$lng,$street,$streetFull,$additional, $id)
+{
+    $data = [
+		'lat' => $lat,
+		'lng' => $lng,
+		'street' => $street,
+		'streetFull' => $streetFull,
+		'additional' => $additional,
 		'id' => $id
     ];
     return update('kontakti_text', $data);

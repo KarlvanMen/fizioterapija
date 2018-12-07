@@ -32,6 +32,8 @@ switch (getGet('r')) {
     case 'delSmallGal'      : delSmallGal();    break;
     case 'updateFiz'        : updateFiz();      break;
     case 'updateVin'        : updateVin();      break;
+    case 'send_tr'          : send_tr();        break;
+    case 'send_qt'          : send_qt();        break;
     
     default              : notSupported();
 }

@@ -8,7 +8,7 @@
                 .arrow.next.pc(@click="changeNextMonth" v-if="showNext")                
                 p   Pirms nākt uz nodarbību, rezervē sev vietu noklikšķinot uz&nbsp;tās                
             .big-container(v-if="dates.nextMonth.length")
-                .arrow.prev.no-pc(@click="previousWeek" v-if="activeDate.day + activeDate.month * 31 + activeDate.year > dates.thisMonth[0][0].day + dates.thisMonth[0][0].month * 31 + 2024")
+                .arrow.prev.no-pc(@click="previousWeek" :class="{'no-action': !(weekNext)}")
                 .month.prev-month
                     .week(v-for="week in dates.previousMonth")
                         .day(v-for="day, index in week" @click="changeToday(day, index)" :class="{'not-current-month': !(day.month === activeDate.month), 'today': (day.day === activeDate.day && day.month === activeDate.month && day.year === activeDate.year)}")
@@ -46,7 +46,7 @@
                                         .title {{training.title}}
                                         .location {{training.location}}
                                         .time {{training.time}}
-                .arrow.next.no-pc(@click="nextWeek" v-if="activeDate.day + activeDate.month * 31 + activeDate.year < dates.nextMonth[dates.nextMonth.length - 1][0].day + dates.nextMonth[dates.nextMonth.length - 1][0].month * 31 + dates.nextMonth[dates.nextMonth.length - 1][0].year + 6")
+                .arrow.next.no-pc(@click="nextWeek" :class="{'no-action': !(showNextArrow())}" )
         .main.no-pc
             .trainings
                 template(v-for="training, index in trainings")
@@ -113,7 +113,8 @@ export default {
             displayPopup: false,
             minimize: false,
             showNext: true,
-            showPrev: false
+            showPrev: false,
+            weekNext: 0
         }
     },
     methods: {
@@ -226,6 +227,7 @@ export default {
                 DaysOfThisMonth: daysOfNextMonthCount,
                 DaysOfNextMonth: daysOfNextNextMonth,
             }
+            this.prevMonth = daysOfPrevMonth
             this.thisMonth = daysOfThisMonthView
             this.nextMonth = daysOfNextMonthView
             this.sortByWeeks()
@@ -341,7 +343,7 @@ export default {
         },
         previousWeek () {
             let day = this.activeDate.dayOfTheWeek - 1
-            if (day < 0) day = 7 + day
+            if (day < 0) day = day + 7
             if (this.activeDate.day < 8) {
                 if (this.activeDate.month < 2) {
                     this.activeDate.year -= 1
@@ -353,6 +355,7 @@ export default {
             } else {
                 this.activeDate.day -= 7
             }
+            this.weekNext--
             this.addCurrentWeek()
         },
         nextWeek () {
@@ -370,6 +373,18 @@ export default {
             } else {
                 this.activeDate.day += 7
             }
+            this.weekNext++
+            // console.log('__________ACTIVE___________')
+            // console.log(this.activeDate.day)
+            // console.log(this.activeDate.month)
+            // console.log(this.activeDate.year)
+            // console.log(this.activeDate.day + this.activeDate.month * 31 + this.activeDate.year)
+            // console.log('__________CURRENT___________')
+            // console.log(this.dates.nextMonth)
+            // console.log(this.dates.thisMonth[0][0].day)
+            // console.log(this.dates.thisMonth[0][0].month)
+            // console.log(this.dates.thisMonth[0][0].year)
+            // console.log(this.dates.thisMonth[0][0].day + this.dates.thisMonth[0][0].month * 31 + 2024)
             this.addCurrentWeek()
         },
         changePreviousMonth () {
@@ -397,6 +412,31 @@ export default {
             this.addCurrentWeek()
             this.showPrev = true
             this.showNext = false
+        },
+        showNextArrow () {
+            // Year check
+            console.log('Active year: ' + this.activeDate.year)
+            console.log('Last year: ' + this.dates.nextMonth[0][this.dates.nextMonth[0].length - 1].year)
+            if (this.activeDate.year > this.dates.nextMonth[0][this.dates.nextMonth[0].length - 1].year) {
+                return false
+            } else {
+                if (this.activeDate.year === this.dates.nextMonth[0][this.dates.nextMonth[0].length - 1].year) {
+                    // Month check
+                    console.log('Active month: ' + this.activeDate.month)
+                    console.log('Last month: ' + this.dates.nextMonth[0][this.dates.nextMonth[0].length - 1].month)
+                    if (this.activeDate.month > this.dates.nextMonth[0][this.dates.nextMonth[0].length - 1].month) {
+                        return false
+                    } else {
+                        // Day check
+                        console.log('Active day: ' + this.activeDate.day)
+                        console.log('Last day: ' + this.dates.nextMonth[0][this.dates.nextMonth[0].length - 1].day)
+                        if ((this.activeDate.day + 7) > this.dates.nextMonth[0][this.dates.nextMonth[0].length - 1].day) {
+                            return false
+                        }
+                    }
+                }
+            }
+            return true
         }
     },
     mounted: function () {
@@ -504,6 +544,11 @@ export default {
                 flex                0 0 auto
                 &.prev
                     transform       rotate(180deg)
+                &.next,
+                &.prev
+                    &.no-action
+                        pointer-events none
+                        opacity 0
                 &.hide
                     display none
             .month

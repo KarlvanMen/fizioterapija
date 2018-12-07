@@ -13,7 +13,7 @@
                 span.white
                 span.blue
             .input-holder
-                input(type="tel" placeholder="TELEFONA NR." v-model="phone")
+                input(type="number" placeholder="TELEFONA NR." v-model="phone" minlength=8)
                 span.white
                 span.blue
             .input-holder
@@ -25,8 +25,10 @@
                 input#insurance(type="checkbox" v-model="insurance")
                 label(for="insurance")
                 div Vēlos norādīt savu personas kodu rēķinā
-            .input-holder(v-if="insurance")
-                input(type="number" placeholder="PERSONAS KODS" min="0" v-model="persID")
+            .input-holder.perskods(v-if="insurance")
+                input.pers(type="number" placeholder="PERSONAS" min="0" v-model="persID_1" minlength=6 maxlength=6)
+                span.minus -
+                input(type="number" ref="kods" placeholder="KODS" min="0" v-model="persID_2" minlength=5 maxlength=5)
                 span.white
                 span.blue
                 span.extrawhite
@@ -56,7 +58,8 @@ export default {
             email: '',
             insurance: false,
             vdar: false,
-            persID: '',
+            persID_1: '',
+            persID_2: '',
             style: '',
             style2: '',
             showFeedback: false,
@@ -64,15 +67,18 @@ export default {
         }
     },
     watch: {
-        // minimize () {
-        //     if (this.minimize) {
-        //     //     document.body.style.overflow = 'visible'
-        //     //     document.documentElement.style.overflow = 'visible'
-        //     // } else {
-        //     //     document.body.style.overflow = 'hidden'
-        //     //     document.documentElement.style.overflow = 'hidden'
-        //     }
-        // },
+        persID_1 () {
+            if (this.persID_1.length > 6) {
+                this.persID_2 = this.persID_1.substr(6, 6)
+                this.persID_1 = this.persID_1.substr(0, 6)
+                this.$refs.kods.focus()
+            }
+        },
+        persID_2 () {
+            if (this.persID_2.length > 5) {
+                this.persID_2 = this.persID_2.substr(0, 5)
+            }
+        },
     },
     methods: {
         ...mapActions(['EDIT_SECTION']),
@@ -82,7 +88,7 @@ export default {
                 phone: this.phone,
                 email: this.email,
                 insurance: this.insurance,
-                personaId: this.persID,
+                personaId: this.persID_1 + '' + this.persID_2,
                 nav_url: 'send_tr',
                 trainings: []
             }
@@ -95,17 +101,17 @@ export default {
                 }
             }
             if (this.name === '') e.target[0].classList.add('red')
-            if (this.phone === '') e.target[1].classList.add('red')
+            if (this.phone === '' || this.phone.length < 8) e.target[1].classList.add('red')
             if (this.email === '') e.target[2].classList.add('red')
             if (!this.vdar) {
-                e.target[4].classList.add('red')
+                e.target[5].classList.add('red')
                 this.showVdarFeedback = true
                 let self = this
                 setTimeout(() => {
                     self.showVdarFeedback = false
                 }, 5000)
             }
-            if (!(this.name === '' || this.phone === '' || this.email === '') && data.trainings.length && this.vdar) {
+            if (!(this.name === '' || this.phone === '' || this.email === '') && this.phone.length > 7 && data.trainings.length && this.vdar) {
                 let self = this
                 this.EDIT_SECTION(data).then((res) => {
                     self.showFeedback = true
@@ -251,6 +257,41 @@ export default {
                         -webkit-appearance  none
                         appearance          none
                         margin              0
+                &.perskods
+                    display flex
+                    flex-wrap wrap
+                    position relative
+                    input,
+                    .minus
+                        flex 1 1 auto
+                        max-width 45%
+                    .minus
+                        position relative
+                        top -2px
+                        width 10px
+                        line-height 40px
+                        text-align center
+                        background-color #fbfbfb
+                        z-index 100
+                        &:before
+                            content ''
+                            position absolute
+                            height 2px
+                            width 5px
+                            top auto
+                            left 0
+                            bottom 0
+                            background-color #3cace2
+                        &:after
+                            content ''
+                            position absolute
+                            height 2px
+                            width 5px
+                            top auto
+                            left auto
+                            right -5px
+                            bottom 0
+                            background-color #fff
             .insurance,
             .vdar
                 margin  1em 0
