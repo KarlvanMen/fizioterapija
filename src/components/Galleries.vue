@@ -85,6 +85,8 @@ export default {
                         font-size       1.2em
                         margin          auto
                         z-index         100
+                        padding         0% 10%
+                        text-align      center
                     &::after
                         content             ''
                         background-color    white
@@ -178,6 +180,7 @@ export default {
                     h2
                         display     inline-block
                         text-align  center
+                        padding     0% 0%
     @media screen and (min-width: 1298px)
         .title 
             width           100%      
